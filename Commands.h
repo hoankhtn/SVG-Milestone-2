@@ -1,0 +1,11 @@
+#pragma once
+#include "EllipticalArcCommand.h"
+#include "MoveToCommand.h"
+#include "LineToCommand.h"
+#include "HorizontalLineToCommand.h"
+#include "CurvetoCommand.h"
+#include "QuadraticBezierCommand.h"
+#include "SmoothCurvetoCommand.h"
+#include "SmoothQuadraticCommand.h"
+#include "VerticalLineToCommand.h"
+#include "ClosePathCommand.h"
