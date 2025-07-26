@@ -93,7 +93,39 @@ void BackgroundDecorator::draw(Graphics& graphics)
             graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size()); 
         }
     }
+    else if (Path* path = dynamic_cast<Path*>(core))
+{
+    const auto& commands = path->getCommands();
+    Color fill = path->getFill();
+    float fillOpacity = path->getFillOpacity();
 
+    if (!commands.empty())
+    {
+        GraphicsPath gpath;
+
+        Point2D current(0, 0);
+        Point2D lastCtrl(0, 0);
+        char previousCmd = 0;
+
+        Color penColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+        Pen pen(penColor, 1.0f);
+
+        for (auto& cmd : commands)
+        {
+            if (cmd)
+            {
+                cmd->execute(graphics, &pen, current, lastCtrl, previousCmd);
+            }
+        }
+
+        if (fillOpacity > 0.0f)
+        {
+            Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+            SolidBrush brush(fillColor);
+            graphics.FillPath(&brush, &gpath);
+        }
+    }
+}  
     if (shape)
         shape->draw(graphics);
 }
