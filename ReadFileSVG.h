@@ -26,6 +26,7 @@ public:
 	Shape* parsePolygon(xml_node<>*);
 	Shape* parseText(xml_node<>*);
 	Shape* parseGroup(xml_node<>*);
+	MyTransform* parseTransform(xml_node<>*);
 	~ReadFileSVG();
 };
 

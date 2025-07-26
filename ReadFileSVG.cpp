@@ -519,4 +519,8 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     return new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
 }
 
+MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
+    
+}
+
 ReadFileSVG::~ReadFileSVG() {}
