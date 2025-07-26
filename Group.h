@@ -1,7 +1,6 @@
 #pragma once
 #include "MyTransform.h"
 #include "Shape.h"
-#include <vector>
 
 class Group : public Shape {
 private:
