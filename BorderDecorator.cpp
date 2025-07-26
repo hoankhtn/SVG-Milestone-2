@@ -1,81 +1,113 @@
-﻿#include "BorderDecorator.h"
+#include "BorderDecorator.h"
 #include "DecoratorUtils.h"
 #include "Shapes.h"
-#include "Path.h"
-// Corrected path command headers:
-#include "MoveToCommand.h"    // For 'M' (moveto) commands
-#include "LineToCommand.h"    // For 'L' (lineto) commands
-#include "CurvetoCommand.h"   // For 'C' (curveto) commands - CORRECTED
-#include "ClosePathCommand.h" // For 'Z' (closepath) commands
 
 BorderDecorator::BorderDecorator(Shape* shape) : ShapeDecorator(shape) {}
 
 void BorderDecorator::draw(Graphics& graphics)
 {
-    // 1. Unwrap the core shape from decorator layers
     Shape* core = getCoreShape(shape);
-    if (!core) return; // Null-check safety
-
-    // 2. Handle Circle outline
     if (Circle* circle = dynamic_cast<Circle*>(core))
     {
-        /* ... (existing circle stroke code) ... */
+        int cx = circle->getCx();
+        int cy = circle->getCy();
+        int r = circle->getR();
+        Color stroke = circle->getStroke();
+        float strokeWidth = circle->getStrokeWidth();
+        float strokeOpacity = circle->getStrokeOpacity();
+
+        Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+        Pen pen(strokeColor, strokeWidth);
+        graphics.DrawEllipse(&pen, cx - r, cy - r, 2 * r, 2 * r);
     }
-    // 3. Handle Path outline
-    else if (Path* path = dynamic_cast<Path*>(core))
+    else if (MyEllipse* ellipse = dynamic_cast<MyEllipse*>(core))
     {
-        GraphicsPath gdiPath;
-        PointF currentPoint;
+        int cx = ellipse->getCx();
+        int cy = ellipse->getCy();
+        int rx = ellipse->getRx();
+        int ry = ellipse->getRy();
+        Color stroke = ellipse->getStroke();
+        float strokeWidth = ellipse->getStrokeWidth();
+        float strokeOpacity = ellipse->getStrokeOpacity();
 
-        // Process each SVG path command
-        const vector<PathCommand*>& commands = path->getCommands();
-        for (size_t i = 0; i < commands.size(); ++i)
+        Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+        Pen pen(strokeColor, strokeWidth);
+
+        graphics.DrawEllipse(&pen, cx - rx, cy - ry, 2 * rx, 2 * ry);
+    }
+    else if (MyRectangle* rect = dynamic_cast<MyRectangle*>(core))
+    {
+        int x = rect->getX();
+        int y = rect->getY();
+        int w = rect->getWidth();
+        int h = rect->getHeight();
+        Color stroke = rect->getStroke();
+        float strokeWidth = rect->getStrokeWidth();
+        float strokeOpacity = rect->getStrokeOpacity();
+
+        Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+        Pen pen(strokeColor, strokeWidth);
+
+        graphics.DrawRectangle(&pen, x, y, w, h);
+    }
+    else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(core))
+    {
+        const auto& points = polygon->getPoints();
+        Color stroke = polygon->getStroke();
+        float strokeWidth = polygon->getStrokeWidth();
+        float strokeOpacity = polygon->getStrokeOpacity();
+
+        if (points.size() >= 2)
         {
-            PathCommand* cmd = commands[i];
+            Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+            Pen pen(strokeColor, strokeWidth);
 
-            // 3.1 MoveTo (M) command
-            if (MoveToCommand* moveCmd = dynamic_cast<MoveToCommand*>(cmd))
+            vector<Point> gdipPoints;
+            for (auto& pt : points)
             {
-                currentPoint = PointF(moveCmd->getX(), moveCmd->getY());
-                gdiPath.StartFigure(); // Begin new sub-path
+                gdipPoints.emplace_back(
+                    static_cast<INT>(pt.getPointX()),
+                    static_cast<INT>(pt.getPointY())
+                );
             }
-            // 3.2 LineTo (L) command
-            else if (LineToCommand* lineCmd = dynamic_cast<LineToCommand*>(cmd))
-            {
-                PointF endPoint(lineCmd->getX(), lineCmd->getY());
-                gdiPath.AddLine(currentPoint, endPoint);
-                currentPoint = endPoint; // Update current position
-            }
-            // 3.3 CurveTo (C) command - NOW USING CURVETOCOMMAND
-            else if (CurvetoCommand* curveCmd = dynamic_cast<CurvetoCommand*>(cmd))
-            {
-                // Get Bezier control points
-                PointF control1(curveCmd->getX1(), curveCmd->getY1());
-                PointF control2(curveCmd->getX2(), curveCmd->getY2());
-                PointF endPoint(curveCmd->getX(), curveCmd->getY());
 
-                // Add cubic Bezier curve to path
-                gdiPath.AddBezier(currentPoint, control1, control2, endPoint);
-                currentPoint = endPoint;
-            }
-            // 3.4 ClosePath (Z) command
-            else if (ClosePathCommand* closeCmd = dynamic_cast<ClosePathCommand*>(cmd))
-            {
-                gdiPath.CloseFigure(); // Complete the shape
-            }
+            graphics.DrawPolygon(&pen, gdipPoints.data(), static_cast<INT>(gdipPoints.size()));
+        }
+    }
+
+    else if (MyPolyline* polyline = dynamic_cast<MyPolyline*>(core))
+    {
+        const auto& points = polyline->getPoints();
+        Color stroke = polyline->getStroke();
+        float strokeWidth = polyline->getStrokeWidth();
+        float strokeOpacity = polyline->getStrokeOpacity();
+        vector<Point> gdipPoints;
+
+        for (const auto& pt : points) {
+            gdipPoints.emplace_back(static_cast<INT>(pt.getPointX()), static_cast<INT>(pt.getPointY()));
         }
 
-        // Apply stroke to the completed path
-        Color strokeColor(
-            static_cast<BYTE>(path->getStrokeOpacity() * 255),
-            path->getStroke().GetR(),
-            path->getStroke().GetG(),
-            path->getStroke().GetB()
-        );
-        Pen pen(strokeColor, path->getStrokeWidth());
-        graphics.DrawPath(&pen, &gdiPath);
+        if (!gdipPoints.empty()) {
+            Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+            Pen pen(strokeColor, strokeWidth);
+            graphics.DrawLines(&pen, gdipPoints.data(), (INT)gdipPoints.size());
+        }
+    }
+    else if (Line* line = dynamic_cast<Line*>(core))
+    {
+        int x1 = line->getX1();
+        int y1 = line->getY1();
+        int x2 = line->getX2();
+        int y2 = line->getY2();
+        Color stroke = line->getStroke();
+        float strokeWidth = line->getStrokeWidth();
+        float strokeOpacity = line->getStrokeOpacity();
+
+        Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+        Pen pen(strokeColor, strokeWidth);
+        graphics.DrawLine(&pen, x1, y1, x2, y2);
     }
 
-    // 4. Continue the decoration chain
-    if (shape) shape->draw(graphics);
+    if (shape)
+        shape->draw(graphics);
 }
