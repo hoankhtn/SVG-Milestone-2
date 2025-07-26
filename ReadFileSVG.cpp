@@ -458,18 +458,19 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     Color stroke = Color(0, 0, 0);  // Black
     float strokeWidth = 1.0f;
     float strokeOpacity = 1.0f;
-
+    cout << "Group\n";
     if (xml_attribute<>* attr = node->first_attribute("fill")) {
         fill = parseColor(attr->value(), 255);
+        cout << "Fill: " << attr->value() << '\n';
     }
     if (xml_attribute<>* attr = node->first_attribute("fill-opacity")) {
         fillOpacity = parseFloat(attr->value(), 1.0f);
         int alpha = static_cast<int>(fillOpacity * 255);
         fill = Color(alpha, fill.GetR(), fill.GetG(), fill.GetB());
     }
-
     if (xml_attribute<>* attr = node->first_attribute("stroke")) {
         stroke = parseColor(attr->value(), 255);
+        cout << "stroke: " << attr->value() << '\n';
     }
     if (xml_attribute<>* attr = node->first_attribute("stroke-width")) {
         strokeWidth = parseFloat(attr->value(), 1.0f);
@@ -479,8 +480,9 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
         int alpha = static_cast<int>(strokeOpacity * 255);
         stroke = Color(alpha, stroke.GetR(), stroke.GetG(), stroke.GetB());
     }
-
-
+    cout << "FillOpacity: " << fillOpacity << '\n';
+    cout << "StrokeWidth: " << strokeWidth << '\n';
+    cout << "StrokeOpacity: " << strokeOpacity << '\n';
     for (xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
         string name = child->name();
         Shape* s = nullptr;
