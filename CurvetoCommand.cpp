@@ -39,5 +39,36 @@ void CurvetoCommand::print(std::ostream& os) const {
 }
 
 void CurvetoCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+    // Draws a cubic Bezier curve from the current point to a destination point.
+    float absX1, absY1, absX2, absY2, absX, absY;
 
+    if (relative) {
+        absX1 = currentPoint.getPointX() + getX1();
+        absY1 = currentPoint.getPointY() + getY1();
+        absX2 = currentPoint.getPointX() + getX2();
+        absY2 = currentPoint.getPointY() + getY2();
+        absX = currentPoint.getPointX() + getX();
+        absY = currentPoint.getPointY() + getY();
+        previousCmd = 'c';
+    }
+    else {
+        absX1 = getX1();
+        absY1 = getY1();
+        absX2 = getX2();
+        absY2 = getY2();
+        absX = getX();
+        absY = getY();
+        previousCmd = 'C';
+    }
+
+
+    PointF p0(currentPoint.getPointX(), currentPoint.getPointY());
+    PointF p1(absX1, absY1);
+    PointF p2(absX2, absY2);
+    PointF p3(absX, absY);
+
+    if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
+
+    currentPoint.setPoint2D(absX, absY);
+    lastControlPoint.setPoint2D(absX2, absY2);
 }
