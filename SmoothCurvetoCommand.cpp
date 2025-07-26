@@ -32,5 +32,40 @@ void SmoothCurvetoCommand::print(std::ostream& os) const {
 }
 
 void SmoothCurvetoCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+    // Draw a smooth cubic Bezier curve with the current point is automatically calculated, the destination point is defined
+    float x1, y1, absX2, absY2, absX, absY;
 
+    if (previousCmd == 'C' || previousCmd == 'c' || previousCmd == 'S' || previousCmd == 's') {
+        x1 = 2 * currentPoint.getPointX() - lastControlPoint.getPointX();
+        y1 = 2 * currentPoint.getPointY() - lastControlPoint.getPointY();
+    }
+    else {
+        x1 = currentPoint.getPointX();
+        y1 = currentPoint.getPointY();
+    }
+
+    if (relative) {
+        absX2 = currentPoint.getPointX() + getX2();
+        absY2 = currentPoint.getPointY() + getY2();
+        absX = currentPoint.getPointX() + getX();
+        absY = currentPoint.getPointY() + getY();
+        previousCmd = 's';
+    }
+    else {
+        absX2 = getX2();
+        absY2 = getY2();
+        absX = getX();
+        absY = getY();
+        previousCmd = 'S';
+    }
+
+    PointF p0(currentPoint.getPointX(), currentPoint.getPointY());
+    PointF p1(x1, y1);
+    PointF p2(absX2, absY2);
+    PointF p3(absX, absY);
+
+    if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
+
+    currentPoint.setPoint2D(absX, absY);
+    lastControlPoint.setPoint2D(absX2, absY2);
 }
