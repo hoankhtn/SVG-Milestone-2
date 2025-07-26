@@ -1,0 +1,9 @@
+#pragma once
+#include "Line.h"
+#include "Path.h"
+#include "Polyline.h"
+#include "Polygon.h"
+#include "Circle.h"
+#include "Ellipse.h"
+#include "Rectangle.h"
+#include "TextDecorator.h"
