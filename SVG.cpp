@@ -52,6 +52,9 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
         else if (name == "path") {
             shape = reader.parsePath(node);
         }
+        else if (name == "g") {
+            shape = reader.parseGroup(node);
+        }
 
         if (shape) {
             if (name != "line" && name != "text") {

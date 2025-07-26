@@ -449,4 +449,72 @@ Shape* ReadFileSVG::parsePath(xml_node<>* node) {
     return new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
 }
 
+Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
+    std::vector<Shape*> children;
+
+
+    Color fill = Color(0, 0, 0, 0); // Transparent
+    float fillOpacity = 1.0f;
+    Color stroke = Color(0, 0, 0);  // Black
+    float strokeWidth = 1.0f;
+    float strokeOpacity = 1.0f;
+
+    if (xml_attribute<>* attr = node->first_attribute("fill")) {
+        fill = parseColor(attr->value(), 255);
+    }
+    if (xml_attribute<>* attr = node->first_attribute("fill-opacity")) {
+        fillOpacity = parseFloat(attr->value(), 1.0f);
+        int alpha = static_cast<int>(fillOpacity * 255);
+        fill = Color(alpha, fill.GetR(), fill.GetG(), fill.GetB());
+    }
+
+    if (xml_attribute<>* attr = node->first_attribute("stroke")) {
+        stroke = parseColor(attr->value(), 255);
+    }
+    if (xml_attribute<>* attr = node->first_attribute("stroke-width")) {
+        strokeWidth = parseFloat(attr->value(), 1.0f);
+    }
+    if (xml_attribute<>* attr = node->first_attribute("stroke-opacity")) {
+        strokeOpacity = parseFloat(attr->value(), 1.0f);
+        int alpha = static_cast<int>(strokeOpacity * 255);
+        stroke = Color(alpha, stroke.GetR(), stroke.GetG(), stroke.GetB());
+    }
+
+
+    for (xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
+        string name = child->name();
+        Shape* s = nullptr;
+
+        if (name == "rect") {
+            s = parseRectangle(child);
+        }
+        else if (name == "circle") {
+            s = parseCircle(child);
+        }
+        else if (name == "ellipse") {
+            s = parseEllipse(child);
+        }
+        else if (name == "line") {
+            s = parseLine(child);
+        }
+        else if (name == "polyline") {
+            s = parsePolyline(child);
+        }
+        else if (name == "polygon") {
+            s = parsePolygon(child);
+        }
+        else if (name == "text") {
+            s = parseText(child);
+        }
+        else if (name == "g") {
+            s = parseGroup(child);
+        }
+
+        if (s) children.push_back(s);
+    }
+
+
+    return new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+}
+
 ReadFileSVG::~ReadFileSVG() {}
