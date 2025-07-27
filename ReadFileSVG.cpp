@@ -515,12 +515,69 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
         if (s) children.push_back(s);
     }
 
+    // Parse transform and return Group
+    MyTransform* tf = parseTransform(node);
+    Group* group = new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    if (tf) group->setTransform(tf);
+    return group;
+
 
     return new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
 }
 
 MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
-    
+    xml_attribute<>* tfAttr = node->first_attribute("transform");
+    if (!tfAttr) return nullptr;
+
+    string tfStr = tfAttr->value();
+    MyTransform* tf = new MyTransform();
+
+    size_t pos = 0;
+    while (pos < tfStr.length()) {
+        // Skip whitespace
+        while (pos < tfStr.length() && isspace(tfStr[pos])) pos++;
+
+        if (tfStr.substr(pos, 9) == "translate") {
+            size_t start = tfStr.find('(', pos) + 1;
+            size_t end = tfStr.find(')', start);
+            string content = tfStr.substr(start, end - start);
+
+            float tx = 0, ty = 0;
+            sscanf_s(content.c_str(), "%f,%f", &tx, &ty);
+            tf->setTranslate(tx, ty);
+            pos = end + 1;
+        }
+        else if (tfStr.substr(pos, 5) == "scale") {
+            size_t start = tfStr.find('(', pos) + 1;
+            size_t end = tfStr.find(')', start);
+            string content = tfStr.substr(start, end - start);
+
+            float sx = 1, sy = 1;
+            if (content.find(',') != string::npos)
+                sscanf_s(content.c_str(), "%f,%f", &sx, &sy);
+            else
+                sscanf_s(content.c_str(), "%f", &sx), sy = sx;
+
+            tf->setScale(sx, sy);
+            pos = end + 1;
+        }
+        else if (tfStr.substr(pos, 6) == "rotate") {
+            size_t start = tfStr.find('(', pos) + 1;
+            size_t end = tfStr.find(')', start);
+            string content = tfStr.substr(start, end - start);
+
+            float angle = 0;
+            sscanf_s(content.c_str(), "%f", &angle);
+            tf->setRotate(angle);
+            pos = end + 1;
+        }
+        else {
+            pos++;
+        }
+    }
+
+    return tf;
 }
+
 
 ReadFileSVG::~ReadFileSVG() {}
