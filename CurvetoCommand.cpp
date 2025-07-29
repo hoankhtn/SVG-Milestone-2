@@ -38,7 +38,7 @@ void CurvetoCommand::print(std::ostream& os) const {
         << "relative=" << (relative ? "true" : "false") << "\n";
 }
 
-void CurvetoCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void CurvetoCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Draws a cubic Bezier curve from the current point to a destination point.
     float absX1, absY1, absX2, absY2, absX, absY;
 
@@ -68,7 +68,7 @@ void CurvetoCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point
     PointF p3(absX, absY);
 
     if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
-
+    if(gpath) gpath->AddBezier(p0, p1, p2, p3);
     currentPoint.setPoint2D(absX, absY);
     lastControlPoint.setPoint2D(absX2, absY2);
 }
