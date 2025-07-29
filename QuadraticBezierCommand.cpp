@@ -31,7 +31,7 @@ void QuadraticBezierCommand::print(std::ostream& os) const {
         << "\n";
 }
 
-void QuadraticBezierCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void QuadraticBezierCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Draw quadratic Bezier curve
     float currX = currentPoint.getPointX();
     float currY = currentPoint.getPointY();
@@ -72,7 +72,7 @@ void QuadraticBezierCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoin
     if (pen) {
         g.DrawBezier(pen, C0, C1, C2, C3);
     }
-
+    if (gpath) gpath->AddBezier(C0, C1, C2, C3);
     currentPoint = Point2D(endX, endY);
     lastControlPoint = Point2D(ctrlX, ctrlY);
 }
