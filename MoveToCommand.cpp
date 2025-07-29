@@ -21,7 +21,7 @@ void MoveToCommand::print(ostream& os) const {
         << "\n";
 }
 
-void MoveToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void MoveToCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     if (relative) {
         currentPoint = Point2D(currentPoint.getPointX() + x, currentPoint.getPointY() + y);
         previousCmd = 'm';
