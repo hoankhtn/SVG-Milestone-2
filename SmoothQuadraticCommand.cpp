@@ -50,7 +50,7 @@ void SmoothQuadraticCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath,
     PointF p3(absX, absY);
 
     if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
-    if(gpath) gpath->AddBezier(p0, p1, p2, p3);
+    if (gpath) gpath->AddBezier(p0, p1, p2, p3);
     currentPoint.setPoint2D(absX, absY);
     lastControlPoint.setPoint2D(x1, y1);
 }
