@@ -40,3 +40,21 @@ Point2D MyTransform::getScale() const {
 float MyTransform::getRotate() const {
     return rotateD;
 }
+#include <cmath>
+
+Point2D MyTransform::applyToPoint(const Point2D& p) const {
+    // Scale
+    float x = p.getPointX() * scaleX;
+    float y = p.getPointY() * scaleY;
+
+    // Rotate
+    float radians = rotateD * 3.14159265f / 180.0f;
+    float rotatedX = x * cos(radians) - y * sin(radians);
+    float rotatedY = x * sin(radians) + y * cos(radians);
+
+    // Translate
+    rotatedX += translateX;
+    rotatedY += translateY;
+
+    return Point2D(rotatedX, rotatedY);
+}
