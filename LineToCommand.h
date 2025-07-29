@@ -14,7 +14,7 @@ public:
 	bool getRelative() const;
 
 	void print(ostream&) const override;
-	void execute(Graphics&, Pen*, Point2D&, Point2D&, char&) override;
+	void execute(Graphics&, Pen*, GraphicsPath*, Point2D&, Point2D&, char&) override;
 };
 
 
