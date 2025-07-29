@@ -20,7 +20,7 @@ void HorizontalLineToCommand::print(std::ostream& os) const {
         << "relative=" << (relative ? "true" : "false") << "\n";
 }
 
-void HorizontalLineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void HorizontalLineToCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Draws a horizontal line from the current point to a new point with a changed x-coordinate, while keeping the y-coordinate unchanged.
     float xDest;
     if (relative) {
@@ -33,12 +33,12 @@ void HorizontalLineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoi
     }
 
     float yDest = currentPoint.getPointY();
-
+    PointF pt1(currentPoint.getPointX(), yDest);
+    PointF pt2(xDest, yDest);
     if (pen) {
-        PointF pt1(currentPoint.getPointX(), yDest);
-        PointF pt2(xDest, yDest);
         g.DrawLine(pen, pt1, pt2);
     }
+    if (gpath) gpath->AddLine(pt1, pt2);
     currentPoint.setPoint2D(xDest, yDest);
     lastControlPoint = currentPoint;
 }
