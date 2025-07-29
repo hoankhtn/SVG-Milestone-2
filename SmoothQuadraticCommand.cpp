@@ -21,7 +21,7 @@ void SmoothQuadraticCommand::print(std::ostream& os) const {
         << "\n";
 }
 
-void SmoothQuadraticCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void SmoothQuadraticCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Draw a smooth quadratic Bezier curve using a reflected control point if applicable
     float x1, y1, absX, absY;
 
@@ -50,7 +50,7 @@ void SmoothQuadraticCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoin
     PointF p3(absX, absY);
 
     if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
-
+    if(gpath) gpath->addBezier(p0, p1, p2, p3);
     currentPoint.setPoint2D(absX, absY);
     lastControlPoint.setPoint2D(x1, y1);
 }
