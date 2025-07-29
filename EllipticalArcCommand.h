@@ -23,6 +23,6 @@ public:
 	bool getRelative() const;
 
 	void print(ostream&) const override;//Use for debug
-	void execute(Graphics&, Pen* pen, Point2D&, Point2D&, char&) override;
+	void execute(Graphics&, Pen* pen, GraphicsPath*, Point2D&, Point2D&, char&) override;
 };
 
