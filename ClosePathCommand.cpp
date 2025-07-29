@@ -13,7 +13,7 @@ void ClosePathCommand::print(std::ostream& os) const {
 }
 
 
-vvoid ClosePathCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void ClosePathCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Close the current path by drawing a straight line from the current point to the starting point of the subpath.
     float currX = currentPoint.getPointX();
     float currY = currentPoint.getPointY();
