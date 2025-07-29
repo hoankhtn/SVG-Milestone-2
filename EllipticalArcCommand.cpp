@@ -45,7 +45,7 @@ void EllipticalArcCommand::print(std::ostream& os) const {
         << "relative=" << (relative ? "true" : "false") << "\n";
 }
 
-void EllipticalArcCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D&, char& previousCmd) {
+void EllipticalArcCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D&, char& previousCmd) {
     // Draws an elliptical arc between two points with parameters such as radii, rotation angle, sweep direction, and large-arc flag.
     float x0 = currentPoint.getPointX();
     float y0 = currentPoint.getPointY();
@@ -131,6 +131,7 @@ void EllipticalArcCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint,
         };
 
         if (pen) g.DrawBezier(pen, p0, p1, p2, p3);
+        if (gpath) gpath->AddBezier(p0, p1, p2, p3);
     }
 
     currentPoint.setPoint2D(x1, y1);
