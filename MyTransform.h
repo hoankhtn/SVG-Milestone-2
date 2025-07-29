@@ -23,5 +23,5 @@ public:
 	Point2D getScale() const;
 	float getRotate() const;
 	//apply
-	Point2D applyToPoint(const Point2D&) const
+	Point2D applyToPoint(const Point2D&) const;
 };

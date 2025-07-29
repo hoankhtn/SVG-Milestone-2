@@ -40,7 +40,6 @@ Point2D MyTransform::getScale() const {
 float MyTransform::getRotate() const {
     return rotateD;
 }
-#include <cmath>
 
 Point2D MyTransform::applyToPoint(const Point2D& p) const {
     // Scale
