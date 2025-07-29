@@ -4,7 +4,7 @@
 class PathCommand
 {
 public:
-	virtual void execute(Graphics&, Pen*, Point2D&, Point2D&, char&) = 0;
+	virtual void execute(Graphics&, Pen*, GraphicsPath*, Point2D&, Point2D&, char&) = 0;
 	virtual void print(ostream&) const = 0; // Use for debug
 	virtual ~PathCommand() {};
 };
