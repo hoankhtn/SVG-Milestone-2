@@ -20,7 +20,7 @@ void LineToCommand::print(ostream& os) const {
         << "relative=" << (relative ? "true" : "false") << "\n";
 }
 
-void LineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void LineToCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     Point2D oldPoint = currentPoint;
 
     if (relative) {
@@ -39,7 +39,9 @@ void LineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2
     if (pen) {
         g.DrawLine(pen, pt1, pt2);
     }
-
+    if (gpath) {
+        gpath->AddLine(pt1, pt2);
+    }
     lastControlPoint = currentPoint;
     
 }
