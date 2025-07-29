@@ -114,7 +114,7 @@ void BackgroundDecorator::draw(Graphics& graphics)
         {
             if (cmd)
             {
-                cmd->execute(graphics, &pen, current, lastCtrl, previousCmd);
+                cmd->execute(graphics, &pen, &gpath, current, lastCtrl, previousCmd);
             }
         }
 
