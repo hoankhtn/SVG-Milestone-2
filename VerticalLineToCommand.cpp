@@ -21,7 +21,7 @@ void VerticalLineToCommand::print(std::ostream& os) const {
         << "\n";
 }
 
-void VerticalLineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
+void VerticalLineToCommand::execute(Graphics& g, Pen* pen, GraphicsPath* gpath, Point2D& currentPoint, Point2D& lastControlPoint, char& previousCmd) {
     // Draws a vertical line from the current point to a new point with a changed y-coordinate, while keeping the x-coordinate unchanged
     float absX = currentPoint.getPointX();
     float absY;
@@ -39,6 +39,6 @@ void VerticalLineToCommand::execute(Graphics& g, Pen* pen, Point2D& currentPoint
     PointF end(absX, absY);
 
     if (pen) g.DrawLine(pen, start, end);
-
+    if (gpath) gpath->AddLine(start, end);
     currentPoint.setPoint2D(absX, absY);
 }
