@@ -114,6 +114,9 @@ void BorderDecorator::draw(Graphics& graphics)
     float strokeWidth = path->getStrokeWidth();
     float strokeOpacity = path->getStrokeOpacity();
 
+    Color fill = path->getFill();
+    float fillOpacity = path->getFillOpacity();
+
     if (!commands.empty())
     {
         GraphicsPath gpath;
@@ -134,6 +137,13 @@ void BorderDecorator::draw(Graphics& graphics)
         if (strokeOpacity > 0.0f)
         {
             Color fillColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+            SolidBrush brush(fillColor);
+            graphics.FillPath(&brush, &gpath);
+        }
+
+        if (fillOpacity > 0.0f)
+        {
+            Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
             SolidBrush brush(fillColor);
             graphics.FillPath(&brush, &gpath);
         }
