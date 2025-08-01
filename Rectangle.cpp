@@ -41,4 +41,29 @@ float MyRectangle::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void MyRectangle::draw(Graphics& graphics) {}
+void MyRectangle::draw(Graphics& graphics) {
+    Point2D p1(x, y);
+    Point2D p2(x + width, y);
+    Point2D p3(x + width, y + height);
+    Point2D p4(x, y + height);
+
+    Point2D tp1 = transform->applyToPoint(p1);
+    Point2D tp2 = transform->applyToPoint(p2);
+    Point2D tp3 = transform->applyToPoint(p3);
+    Point2D tp4 = transform->applyToPoint(p4);
+
+    Point points[4] = {
+        Point((INT)tp1.getPointX(), (INT)tp1.getPointY()),
+        Point((INT)tp2.getPointX(), (INT)tp2.getPointY()),
+        Point((INT)tp3.getPointX(), (INT)tp3.getPointY()),
+        Point((INT)tp4.getPointX(), (INT)tp4.getPointY())
+    };
+
+    Color fillColor = Color((BYTE)(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+    SolidBrush brush(fillColor);
+    graphics.FillPolygon(&brush, points, 4);
+
+    Color strokeColor = Color((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+    Pen pen(strokeColor, strokeWidth);
+    graphics.DrawPolygon(&pen, points, 4);
+}

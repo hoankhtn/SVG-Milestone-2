@@ -37,4 +37,40 @@ float Circle::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void Circle::draw(Graphics& graphics) {}
+void Circle::draw(Graphics& graphics) {
+    MyTransform transform;
+    transform.setTranslate(0, 0);
+    transform.setRotate(0);
+    transform.setUniformScale(1.0);
+
+    Point2D center(cx, cy);
+    Point2D transformedCenter = transform.applyToPoint(center);
+
+    float sx = transform.getScale().getPointX();
+    float sy = transform.getScale().getPointY();
+    float scaledRadius = r * (sx + sy) / 2.0f;
+
+    Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+    SolidBrush brush(fillColor);
+
+    Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+    Pen pen(strokeColor, strokeWidth);
+
+    graphics.DrawEllipse(
+        &pen,
+        static_cast<INT>(transformedCenter.getPointX() - scaledRadius),
+        static_cast<INT>(transformedCenter.getPointY() - scaledRadius),
+        static_cast<INT>(2 * scaledRadius),
+        static_cast<INT>(2 * scaledRadius)
+    );
+
+    graphics.FillEllipse(
+        &brush,
+        static_cast<INT>(transformedCenter.getPointX() - scaledRadius),
+        static_cast<INT>(transformedCenter.getPointY() - scaledRadius),
+        static_cast<INT>(2 * scaledRadius),
+        static_cast<INT>(2 * scaledRadius)
+    );
+}
+
+
