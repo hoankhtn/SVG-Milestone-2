@@ -108,37 +108,49 @@ void BorderDecorator::draw(Graphics& graphics)
         graphics.DrawLine(&pen, x1, y1, x2, y2);
     }
     else if (Path* path = dynamic_cast<Path*>(core))
-{
-    const auto& commands = path->getCommands();
-    Color stroke = path->getStroke();
-    float strokeWidth = path->getStrokeWidth();
-    float strokeOpacity = path->getStrokeOpacity();
-
-    if (!commands.empty())
     {
-        GraphicsPath gpath;
-        Point2D current(0, 0);
-        Point2D lastCtrl(0, 0);
-        char previousCmd = 0;
+        const auto& commands = path->getCommands();
+        Color stroke = path->getStroke();
+        float strokeWidth = path->getStrokeWidth();
+        float strokeOpacity = path->getStrokeOpacity();
 
-        Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-        Pen pen(strokeColor, strokeWidth);
-        for (auto& cmd : commands)
+        if (!commands.empty())
         {
-            if (cmd)
+            GraphicsPath gpath;
+            Point2D current(0, 0);
+            Point2D lastCtrl(0, 0);
+            char previousCmd = 0;
+
+            Color strokeColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+            Pen pen(strokeColor, strokeWidth);
+            for (auto& cmd : commands)
             {
-                cmd->execute(graphics, &pen, &gpath, current, lastCtrl, previousCmd);
+                if (cmd)
+                {
+                    cmd->execute(graphics, &pen, &gpath, current, lastCtrl, previousCmd);
+                }
+            }
+
+            if (strokeOpacity > 0.0f)
+            {
+                Color fillColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+                SolidBrush brush(fillColor);
+                graphics.FillPath(&brush, &gpath);
             }
         }
-
-        if (strokeOpacity > 0.0f)
+    }
+    else if (Group* group = dynamic_cast<Group*>(core))
+    {
+        for (Shape* subShape : group->getChildren())
         {
-            Color fillColor(static_cast<BYTE>(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-            SolidBrush brush(fillColor);
-            graphics.FillPath(&brush, &gpath);
+            if (subShape)
+            {
+                BorderDecorator decorator(subShape);
+                decorator.draw(graphics);
+            }
         }
     }
-}
+
     if (shape)
         shape->draw(graphics);
 }

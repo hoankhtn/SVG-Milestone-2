@@ -94,38 +94,49 @@ void BackgroundDecorator::draw(Graphics& graphics)
         }
     }
     else if (Path* path = dynamic_cast<Path*>(core))
-{
-    const auto& commands = path->getCommands();
-    Color fill = path->getFill();
-    float fillOpacity = path->getFillOpacity();
-
-    if (!commands.empty())
     {
-        GraphicsPath gpath;
+        const auto& commands = path->getCommands();
+        Color fill = path->getFill();
+        float fillOpacity = path->getFillOpacity();
 
-        Point2D current(0, 0);
-        Point2D lastCtrl(0, 0);
-        char previousCmd = 0;
-
-        Color penColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
-        Pen pen(penColor, 1.0f);
-
-        for (auto& cmd : commands)
+        if (!commands.empty())
         {
-            if (cmd)
+            GraphicsPath gpath;
+
+            Point2D current(0, 0);
+            Point2D lastCtrl(0, 0);
+            char previousCmd = 0;
+
+            Color penColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+            Pen pen(penColor, 1.0f);
+
+            for (auto& cmd : commands)
             {
-                cmd->execute(graphics, &pen, &gpath, current, lastCtrl, previousCmd);
+                if (cmd)
+                {
+                    cmd->execute(graphics, &pen, &gpath, current, lastCtrl, previousCmd);
+                }
+            }
+
+            if (fillOpacity > 0.0f)
+            {
+                Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
+                SolidBrush brush(fillColor);
+                graphics.FillPath(&brush, &gpath);
             }
         }
-
-        if (fillOpacity > 0.0f)
+    }
+    else if (Group* group = dynamic_cast<Group*>(core))
+    {
+        for (Shape* subShape : group->getChildren())
         {
-            Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
-            SolidBrush brush(fillColor);
-            graphics.FillPath(&brush, &gpath);
+            if (subShape)
+            {
+                BackgroundDecorator decorator(subShape);
+                decorator.draw(graphics);
+            }
         }
     }
-}  
     if (shape)
         shape->draw(graphics);
 }
