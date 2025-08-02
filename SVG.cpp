@@ -74,7 +74,7 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
 
 //int main() {
 //    LoadFileSVG loader;
-//    loader.LoadSVG("svg-04.svg");
+//    loader.LoadSVG("svg-11.svg");
 //    for (Shape* shape : shapes)
 //        delete shape;
 //    shapes.clear();
@@ -107,7 +107,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR lpCmdLine, INT iCmdShow)
 
     /*string fileName = lpCmdLine;*/
     LoadFileSVG loader;
-    loader.LoadSVG("svg-11.svg");
+    loader.LoadSVG("svg-03.svg");
 
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;

@@ -527,23 +527,30 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
 
 MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
     xml_attribute<>* tfAttr = node->first_attribute("transform");
-    if (!tfAttr) return nullptr;
+    if (!tfAttr) {
+        cout << "No transform attribute found.\n";
+        return nullptr;
+    }
 
     string tfStr = tfAttr->value();
-    MyTransform* tf = new MyTransform();
+    cout << "Transform string: " << tfStr << "\n";
 
+    MyTransform* tf = new MyTransform();
     size_t pos = 0;
+
     while (pos < tfStr.length()) {
-        // Skip whitespace
         while (pos < tfStr.length() && isspace(tfStr[pos])) pos++;
 
         if (tfStr.substr(pos, 9) == "translate") {
             size_t start = tfStr.find('(', pos) + 1;
             size_t end = tfStr.find(')', start);
             string content = tfStr.substr(start, end - start);
+            cout << "Found translate: " << content << "\n";
 
             float tx = 0, ty = 0;
-            sscanf_s(content.c_str(), "%f,%f", &tx, &ty);
+            int readCount = sscanf_s(content.c_str(), "%f,%f", &tx, &ty);
+            cout << "Parsed translate tx=" << tx << ", ty=" << ty << " (readCount=" << readCount << ")\n";
+
             tf->setTranslate(tx, ty);
             pos = end + 1;
         }
@@ -551,12 +558,18 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
             size_t start = tfStr.find('(', pos) + 1;
             size_t end = tfStr.find(')', start);
             string content = tfStr.substr(start, end - start);
+            cout << "Found scale: " << content << "\n";
 
             float sx = 1, sy = 1;
-            if (content.find(',') != string::npos)
-                sscanf_s(content.c_str(), "%f,%f", &sx, &sy);
-            else
-                sscanf_s(content.c_str(), "%f", &sx), sy = sx;
+            if (content.find(',') != string::npos) {
+                int readCount = sscanf_s(content.c_str(), "%f,%f", &sx, &sy);
+                cout << "Parsed scale sx=" << sx << ", sy=" << sy << " (readCount=" << readCount << ")\n";
+            }
+            else {
+                int readCount = sscanf_s(content.c_str(), "%f", &sx);
+                sy = sx;
+                cout << "Parsed uniform scale sx=sy=" << sx << " (readCount=" << readCount << ")\n";
+            }
 
             tf->setScale(sx, sy);
             pos = end + 1;
@@ -565,19 +578,22 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
             size_t start = tfStr.find('(', pos) + 1;
             size_t end = tfStr.find(')', start);
             string content = tfStr.substr(start, end - start);
+            cout << "Found rotate: " << content << "\n";
 
             float angle = 0;
-            sscanf_s(content.c_str(), "%f", &angle);
+            int readCount = sscanf_s(content.c_str(), "%f", &angle);
+            cout << "Parsed rotate angle=" << angle << " (readCount=" << readCount << ")\n";
+
             tf->setRotate(angle);
             pos = end + 1;
         }
         else {
+            cout << "Unknown transform or skipping character: " << tfStr[pos] << "\n";
             pos++;
         }
     }
 
     return tf;
 }
-
 
 ReadFileSVG::~ReadFileSVG() {}
