@@ -27,6 +27,10 @@ public:
         return transform;
     }
 
+    Point2D applyTransform(const Point2D& p) {
+        return (transform ? transform->applyToPoint(p) : p);
+    }
+
     virtual void draw(Graphics& g) = 0;
 };
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Group.h"
 #include "Line.h"
 #include "Path.h"
 #include "Polyline.h"
