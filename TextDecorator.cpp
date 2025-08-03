@@ -1,10 +1,40 @@
 ﻿#include "TextDecorator.h"
+#include "Group.h"
 
 TextDecorator::TextDecorator(Shape* shape, wstring text, int x, int y, const Color& color, int FontSize)
     : ShapeDecorator(shape), text(text), x(x), y(y), color(color), FontSize(FontSize) {}
 
+void TextDecorator::setFontSize(int fontSize) {
+    this->FontSize = fontSize;
+}
+
+int TextDecorator::getFontSize() const {
+    return FontSize;
+}
 void TextDecorator::draw(Graphics& graphics)
 {
+    if (Group* group = dynamic_cast<Group*>(shape))
+    {
+        for (Shape* subShape : group->getChildren())
+        {
+            if (!subShape) continue;
+
+            TextDecorator* textDeco = dynamic_cast<TextDecorator*>(subShape);
+            if (textDeco)
+            {
+                if (textDeco->FontSize == 0 && this->FontSize > 0)
+                    textDeco->setFontSize(this->FontSize);
+
+                textDeco->draw(graphics);
+            }
+            else
+            {
+                subShape->draw(graphics); 
+            }
+        }
+        return;
+    }
+
     if (shape)
         shape->draw(graphics);
 
