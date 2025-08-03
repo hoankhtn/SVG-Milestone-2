@@ -141,13 +141,77 @@ void BorderDecorator::draw(Graphics& graphics)
     }
     else if (Group* group = dynamic_cast<Group*>(core))
     {
+        Color groupStroke = group->getStroke();
+        float groupStrokeWidth = group->getStrokeWidth();
+        float groupStrokeOpacity = group->getStrokeOpacity();
+
         for (Shape* subShape : group->getChildren())
         {
-            if (subShape)
-            {
-                BorderDecorator decorator(subShape);
-                decorator.draw(graphics);
+            if (!subShape) continue;
+
+            // Circle
+            if (Circle* circle = dynamic_cast<Circle*>(subShape)) {
+                if (circle->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    circle->setStroke(groupStroke);
+                if (circle->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    circle->setStrokeWidth(groupStrokeWidth);
+                if (circle->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    circle->setStrokeOpacity(groupStrokeOpacity);
             }
+
+            // Ellipse
+            else if (MyEllipse* ellipse = dynamic_cast<MyEllipse*>(subShape)) {
+                if (ellipse->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    ellipse->setStroke(groupStroke);
+                if (ellipse->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    ellipse->setStrokeWidth(groupStrokeWidth);
+                if (ellipse->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    ellipse->setStrokeOpacity(groupStrokeOpacity);
+            }
+
+            // Rectangle
+            else if (MyRectangle* rectangle = dynamic_cast<MyRectangle*>(subShape)) {
+                if (rectangle->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    rectangle->setStroke(groupStroke);
+                if (rectangle->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    rectangle->setStrokeWidth(groupStrokeWidth);
+                if (rectangle->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    rectangle->setStrokeOpacity(groupStrokeOpacity);
+            }
+
+            // Line
+            else if (Line* line = dynamic_cast<Line*>(subShape)) {
+                if (line->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    line->setStroke(groupStroke);
+                if (line->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    line->setStrokeWidth(groupStrokeWidth);
+                if (line->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    line->setStrokeOpacity(groupStrokeOpacity);
+            }
+
+            // Polyline
+            else if (MyPolyline* polyline = dynamic_cast<MyPolyline*>(subShape)) {
+                if (polyline->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    polyline->setStroke(groupStroke);
+                if (polyline->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    polyline->setStrokeWidth(groupStrokeWidth);
+                if (polyline->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    polyline->setStrokeOpacity(groupStrokeOpacity);
+            }
+
+            // Polygon
+            else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(subShape)) {
+                if (polygon->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
+                    polygon->setStroke(groupStroke);
+                if (polygon->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
+                    polygon->setStrokeWidth(groupStrokeWidth);
+                if (polygon->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
+                    polygon->setStrokeOpacity(groupStrokeOpacity);
+            }
+
+            // Decorator
+            BorderDecorator decorator(subShape);
+            decorator.draw(graphics);
         }
     }
 

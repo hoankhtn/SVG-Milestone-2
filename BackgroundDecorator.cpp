@@ -128,15 +128,64 @@ void BackgroundDecorator::draw(Graphics& graphics)
     }
     else if (Group* group = dynamic_cast<Group*>(core))
     {
+        Color groupFill = group->getFill();
+        float groupFillOpacity = group->getFillOpacity();
+
         for (Shape* subShape : group->getChildren())
         {
-            if (subShape)
-            {
-                BackgroundDecorator decorator(subShape);
-                decorator.draw(graphics);
+            if (!subShape) continue;
+
+            // Circle
+            if (Circle* circle = dynamic_cast<Circle*>(subShape)) {
+                if (circle->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    circle->setFill(groupFill);
+
+                if (circle->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    circle->setFillOpacity(groupFillOpacity);
             }
+
+            // Ellipse
+            else if (MyEllipse* ellipse = dynamic_cast<MyEllipse*>(subShape)) {
+                if (ellipse->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    ellipse->setFill(groupFill);
+
+                if (ellipse->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    ellipse->setFillOpacity(groupFillOpacity);
+            }
+
+            // Rectangle
+            else if (MyRectangle* rectangle = dynamic_cast<MyRectangle*>(subShape)) {
+                if (rectangle->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    rectangle->setFill(groupFill);
+
+                if (rectangle->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    rectangle->setFillOpacity(groupFillOpacity);
+            }
+
+            // Polyline
+            else if (MyPolyline* polyline = dynamic_cast<MyPolyline*>(subShape)) {
+                if (polyline->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    polyline->setFill(groupFill);
+
+                if (polyline->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    polyline->setFillOpacity(groupFillOpacity);
+            }
+
+            // Polygon
+            else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(subShape)) {
+                if (polygon->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    polygon->setFill(groupFill);
+
+                if (polygon->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    polygon->setFillOpacity(groupFillOpacity);
+            }
+
+            // Decorator
+            BackgroundDecorator decorator(subShape);
+            decorator.draw(graphics);
         }
     }
+
     if (shape)
         shape->draw(graphics);
 }
