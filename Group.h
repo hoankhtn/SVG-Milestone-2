@@ -10,6 +10,7 @@ private:
 	Color stroke;
 	float strokeWidth;
 	float strokeOpacity;
+	int fontSize;
 public:
 	vector <Shape*> getChildren() const;
 	Color getFill() const;
@@ -17,7 +18,8 @@ public:
 	Color getStroke() const;
 	float getStrokeWidth() const;
 	float getStrokeOpacity() const;
-	Group(vector <Shape*>, const Color&, float, const Color&, float, float);
+	int getFontSize() const;
+	Group(vector <Shape*>, const Color&, float, const Color&, float, float, int);
 
 	void draw(Graphics&) override;
 };

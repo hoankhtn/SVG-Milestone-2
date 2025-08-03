@@ -2,7 +2,7 @@
 
 Group::Group(vector<Shape*> children,
     const Color& fill, float fillOpacity,
-    const Color& stroke, float strokeWidth, float strokeOpacity)
+    const Color& stroke, float strokeWidth, float strokeOpacity, int fontSize)
 {
     this->children = children;
     this->fill = fill;
@@ -10,6 +10,7 @@ Group::Group(vector<Shape*> children,
     this->stroke = stroke;
     this->strokeWidth = strokeWidth;
     this->strokeOpacity = strokeOpacity;
+    this->fontSize = fontSize;
 }
 
 vector<Shape*> Group::getChildren() const {
@@ -36,13 +37,26 @@ float Group::getStrokeOpacity() const {
     return strokeOpacity;
 }
 
+int Group::getFontSize() const {
+    return fontSize;
+}
+
 void Group::draw(Graphics& g) {
+    if (transform == nullptr) return;
 
+    for (Shape* subShape : children) {
+        if (!subShape) continue;
 
-    for (Shape* shape : children) {
-        if (shape) {
-            shape->draw(g);
+        MyTransform* groupTransform = this->getTransform();
+        MyTransform* shapeTransform = subShape->getTransform();
+
+        if (groupTransform && shapeTransform) {
+            MyTransform* combined = new MyTransform(*shapeTransform);
+            combined->combineWith(*groupTransform);
+            subShape->setTransform(combined);
         }
+
+        subShape->draw(g);
     }
 }
 
