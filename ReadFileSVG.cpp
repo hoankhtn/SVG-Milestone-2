@@ -1,14 +1,42 @@
 ﻿#include "ReadFileSVG.h"
 #include "Shapes.h"
 #include "Commands.h"
+#include <unordered_map>
 
 Color ReadFileSVG::parseColor(const char* colorStr, float opacity)
 {
     int r = 0, g = 0, b = 0;
-    if (colorStr && sscanf_s(colorStr, "rgb(%d,%d,%d)", &r, &g, &b) == 3) {
-        BYTE alpha = static_cast<BYTE>(opacity * 255);
-        ARGB argb = (alpha << 24) | (r << 16) | (g << 8) | b;
-        return Color(argb);
+    if (!colorStr) return Color::Black;
+
+    BYTE alpha = static_cast<BYTE>(opacity * 255);
+
+    if (sscanf_s(colorStr, "rgb(%d,%d,%d)", &r, &g, &b) == 3) {
+        return Color(alpha, r, g, b);
+    }
+
+    string name(colorStr);
+    transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+    static const unordered_map<string, Color> namedColors = {
+        {"black", Color(alpha, 0, 0, 0)},
+        {"white", Color(alpha, 255, 255, 255)},
+        {"red",   Color(alpha, 255, 0, 0)},
+        {"green", Color(alpha, 0, 128, 0)},
+        {"blue",  Color(alpha, 0, 0, 255)},
+        {"yellow", Color(alpha, 255, 255, 0)},
+        {"cyan", Color(alpha, 0, 255, 255)},
+        {"magenta", Color(alpha, 255, 0, 255)},
+        {"gray", Color(alpha, 128, 128, 128)},
+        {"darkgray", Color(alpha, 169, 169, 169)},
+        {"lightgray", Color(alpha, 211, 211, 211)},
+        {"orange", Color(alpha, 255, 165, 0)},
+        {"purple", Color(alpha, 128, 0, 128)},
+        {"brown", Color(alpha, 165, 42, 42)}
+    };
+
+    auto it = namedColors.find(name);
+    if (it != namedColors.end()) {
+        return it->second;
     }
 
     return Color(Color::Black);
@@ -85,7 +113,12 @@ Shape* ReadFileSVG::parseRectangle(xml_node<>* node) {
     cout << "strokeWidth: " << strokeWidth << '\n';
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
-    return new MyRectangle(x, y, width, height, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+
+    MyTransform* tf = parseTransform(node);
+    MyRectangle* rectangle = new MyRectangle(x, y, width, height, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    if (tf) rectangle->setTransform(tf);
+
+    return rectangle;
 }
 
 Shape* ReadFileSVG::parseCircle(xml_node<>* node) {
@@ -112,7 +145,12 @@ Shape* ReadFileSVG::parseCircle(xml_node<>* node) {
     cout << "strokeWidth: " << strokeWidth << '\n';
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
-    return new Circle(cx, cy, r, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+
+    MyTransform* tf = parseTransform(node);
+    Circle* circle = new Circle(cx, cy, r, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    if (tf) circle->setTransform(tf);
+
+    return circle;
 }
 
 Shape* ReadFileSVG::parseEllipse(xml_node<>* node) {
@@ -142,7 +180,11 @@ Shape* ReadFileSVG::parseEllipse(xml_node<>* node) {
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
 
-    return new MyEllipse(cx, cy, rx, ry, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    MyTransform* tf = parseTransform(node);
+    MyEllipse* ellipse = new MyEllipse(cx, cy, rx, ry, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    if (tf) ellipse->setTransform(tf);
+
+    return ellipse;
 }
 
 Shape* ReadFileSVG::parseLine(xml_node<>* node) {
@@ -164,7 +206,11 @@ Shape* ReadFileSVG::parseLine(xml_node<>* node) {
     cout << "strokeOpacity: " << strokeOpacity << '\n';
     cout << "strokeWidth: " << strokeWidth << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
-    return new Line(x1, y1, x2, y2, stroke, strokeWidth, strokeOpacity);
+    MyTransform* tf = parseTransform(node);
+    Line* line = new Line(x1, y1, x2, y2, stroke, strokeWidth, strokeOpacity);
+    if (tf) line->setTransform(tf);
+
+    return line;
 }
 
 Shape* ReadFileSVG::parsePolyline(xml_node<>* node) {
@@ -194,7 +240,11 @@ Shape* ReadFileSVG::parsePolyline(xml_node<>* node) {
     for (auto& pt : ptsPOINT) {
         cout << "(" << pt.x << ", " << pt.y << ")" << '\n';
     }
-    return new MyPolyline(fill, fillOpacity, ptsPOINT, stroke, strokeWidth, strokeOpacity);
+    MyTransform* tf = parseTransform(node);
+    MyPolyline* polyline = new MyPolyline(fill, fillOpacity, ptsPOINT, stroke, strokeWidth, strokeOpacity);
+    if (tf) polyline->setTransform(tf);
+
+    return polyline;
 }
 
 Shape* ReadFileSVG::parsePolygon(xml_node<>* node) {
@@ -219,7 +269,11 @@ Shape* ReadFileSVG::parsePolygon(xml_node<>* node) {
     for (auto& pt : pts) {
         cout << "(" << pt.getPointX() << ", " << pt.getPointY() << ")" << '\n';
     }
-    return new MyPolygon(fill, fillOpacity, pts, stroke, strokeWidth, strokeOpacity);
+    MyTransform* tf = parseTransform(node);
+    MyPolygon* polygon = new MyPolygon(fill, fillOpacity, pts, stroke, strokeWidth, strokeOpacity);
+    if (tf) polygon->setTransform(tf);
+
+    return polygon;
 }
 
 Shape* ReadFileSVG::parseText(xml_node<>* node) {
@@ -243,7 +297,11 @@ Shape* ReadFileSVG::parseText(xml_node<>* node) {
     cout << "fontSize: " << fontSize << '\n';
     cout << "fillOpacity: " << fillOpacity << '\n';
     cout << "fillStr: " << fillStr << '\n';
-    return new TextDecorator(nullptr, wtext, x, y, fill, fontSize);
+    MyTransform* tf = parseTransform(node);
+    TextDecorator* textDecorator = new TextDecorator(nullptr, wtext, x, y, fill, fontSize);
+    if (tf) textDecorator->setTransform(tf);
+
+    return textDecorator;
 }
 
 bool ReadFileSVG::isLetter(char c) {
@@ -446,18 +504,22 @@ Shape* ReadFileSVG::parsePath(xml_node<>* node) {
     cout << "FillStr: " << fillStr << '\n';
     cout << "StrokeStr: " << strokeStr << '\n';
 
-    return new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    MyTransform* tf = parseTransform(node);
+    Path* path =  new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    if (tf) path->setTransform(tf);
+
+    return path;
 }
 
 Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
-    std::vector<Shape*> children;
-
+    vector<Shape*> children;
 
     Color fill = Color(0, 0, 0, 0); // Transparent
     float fillOpacity = 1.0f;
     Color stroke = Color(0, 0, 0);  // Black
     float strokeWidth = 1.0f;
     float strokeOpacity = 1.0f;
+    int fontSize = 1.0f;
     cout << "Group\n";
     if (xml_attribute<>* attr = node->first_attribute("fill")) {
         fill = parseColor(attr->value(), 255);
@@ -479,6 +541,9 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
         strokeOpacity = parseFloat(attr->value(), 1.0f);
         int alpha = static_cast<int>(strokeOpacity * 255);
         stroke = Color(alpha, stroke.GetR(), stroke.GetG(), stroke.GetB());
+    }
+    if (xml_attribute<>* attr = node->first_attribute("font-size")) {
+        fontSize = parseInt(attr->value(), 1.0f);
     }
     cout << "FillOpacity: " << fillOpacity << '\n';
     cout << "StrokeWidth: " << strokeWidth << '\n';
@@ -517,12 +582,10 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
 
     // Parse transform and return Group
     MyTransform* tf = parseTransform(node);
-    Group* group = new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
+    Group* group = new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, fontSize);
     if (tf) group->setTransform(tf);
+
     return group;
-
-
-    return new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
 }
 
 MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
