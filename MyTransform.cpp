@@ -1,4 +1,5 @@
 #include "MyTransform.h"
+#include "Resource.h"
 
 MyTransform::MyTransform() {
     translateX = 0.0f;
@@ -41,19 +42,12 @@ float MyTransform::getRotate() const {
     return rotateD;
 }
 
-Point2D MyTransform::applyToPoint(const Point2D& p) const {
-    // Scale
-    float x = p.getPointX() * scaleX;
-    float y = p.getPointY() * scaleY;
+void MyTransform::combineWith(const MyTransform& other) {
+    scaleX *= other.scaleX;
+    scaleY *= other.scaleY;
 
-    // Rotate
-    float radians = rotateD * 3.14159265f / 180.0f;
-    float rotatedX = x * cos(radians) - y * sin(radians);
-    float rotatedY = x * sin(radians) + y * cos(radians);
+    rotateD += other.rotateD;
 
-    // Translate
-    rotatedX += translateX;
-    rotatedY += translateY;
-
-    return Point2D(rotatedX, rotatedY);
+    translateX += other.translateX;
+    translateY += other.translateY;
 }

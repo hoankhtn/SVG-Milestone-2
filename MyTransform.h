@@ -22,6 +22,6 @@ public:
 	Point2D getTranslate() const;
 	Point2D getScale() const;
 	float getRotate() const;
-	//apply
-	Point2D applyToPoint(const Point2D&) const;
+	//combine
+	void combineWith(const MyTransform& other);
 };
