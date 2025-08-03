@@ -13,8 +13,11 @@ public:
 	int getX2() const;
 	int getY1() const;
 	int getY2() const;
+	void setStroke(const Color&);
 	Color getStroke() const;
+	void setStrokeWidth(float);
 	float getStrokeWidth() const;
+	void setStrokeOpacity(float);
 	float getStrokeOpacity() const;
 	void draw(Graphics&) override;
 };

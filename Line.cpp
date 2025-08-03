@@ -21,12 +21,24 @@ int Line::getY2() const {
     return this->y2;
 }
 
+void Line::setStroke(const Color& stroke) {
+    this->stroke = stroke;
+}
+
 Color Line::getStroke() const {
     return this->stroke;
 }
 
+void Line::setStrokeWidth(float strokeWidth) {
+    this->strokeWidth = strokeWidth;
+}
+
 float Line::getStrokeWidth() const {
     return this->strokeWidth;
+}
+
+void Line::setStrokeOpacity(float strokeOpacity) {
+    this->strokeOpacity = strokeOpacity;
 }
 
 float Line::getStrokeOpacity() const {
@@ -34,14 +46,29 @@ float Line::getStrokeOpacity() const {
 }
 
 void Line::draw(Graphics& graphics) {
-    Point2D p1((float)x1, (float)y1);
-    Point2D p2((float)x2, (float)y2);
+    if (transform == nullptr) return;
 
-    Point2D tp1 = transform->applyToPoint(p1);
-    Point2D tp2 = transform->applyToPoint(p2);
+    float sx = transform->getScale().getPointX();
+    float sy = transform->getScale().getPointY();
+    float tx = transform->getTranslate().getPointX();
+    float ty = transform->getTranslate().getPointY();
+    float rotate = transform->getRotate();
 
-    Color strokeColor = Color((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+    Matrix m;
+    m.Scale(sx, sy);
+    m.Rotate(rotate);
+    m.Translate(tx, ty);
+
+    PointF points[2] = {
+        PointF((REAL)x1, (REAL)y1),
+        PointF((REAL)x2, (REAL)y2)
+    };
+    m.TransformPoints(points, 2);
+
+    Color strokeColor((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
     Pen pen(strokeColor, strokeWidth);
 
-    graphics.DrawLine(&pen, (INT)tp1.getPointX(), (INT)tp1.getPointY(), (INT)tp2.getPointX(), (INT)tp2.getPointY());
+    graphics.DrawLine(&pen,
+        points[0].X, points[0].Y,
+        points[1].X, points[1].Y);
 }
