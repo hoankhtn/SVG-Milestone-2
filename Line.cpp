@@ -33,4 +33,15 @@ float Line::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void Line::draw(Graphics& graphics) {}
+void Line::draw(Graphics& graphics) {
+    Point2D p1((float)x1, (float)y1);
+    Point2D p2((float)x2, (float)y2);
+
+    Point2D tp1 = transform->applyToPoint(p1);
+    Point2D tp2 = transform->applyToPoint(p2);
+
+    Color strokeColor = Color((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+    Pen pen(strokeColor, strokeWidth);
+
+    graphics.DrawLine(&pen, (INT)tp1.getPointX(), (INT)tp1.getPointY(), (INT)tp2.getPointX(), (INT)tp2.getPointY());
+}

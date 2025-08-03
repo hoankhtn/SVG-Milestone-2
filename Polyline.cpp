@@ -32,4 +32,17 @@ float MyPolyline::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void MyPolyline::draw(Graphics& graphics) {}
+void MyPolyline::draw(Graphics& graphics) {
+    if (pts.size() < 2) return;
+
+    std::vector<Point> transformedPoints;
+    for (const auto& pt : pts) {
+        Point2D t = transform->applyToPoint(pt);
+        transformedPoints.emplace_back(Point((INT)t.getPointX(), (INT)t.getPointY()));
+    }
+
+    Color strokeColor = Color((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
+    Pen pen(strokeColor, strokeWidth);
+
+    graphics.DrawLines(&pen, transformedPoints.data(), static_cast<INT>(transformedPoints.size()));
+}
