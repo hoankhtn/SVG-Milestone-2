@@ -30,6 +30,7 @@
 #include "rapidxml.hpp"
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <cctype>
 #include <windows.h>
 #include <gdiplus.h>
