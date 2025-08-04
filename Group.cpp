@@ -1,4 +1,5 @@
 #include "Group.h"
+#include "Shapes.h"
 
 Group::Group(vector<Shape*> children,
     const Color& fill, float fillOpacity,
@@ -17,20 +18,40 @@ vector<Shape*> Group::getChildren() const {
     return children;
 }
 
+void Group::setFill(const Color& fill) {
+    this->fill = fill;
+}
+
 Color Group::getFill() const {
     return fill;
+}
+
+void Group::setFillOpacity(float fillOpacity) {
+    this->fillOpacity = fillOpacity;
 }
 
 float Group::getFillOpacity() const {
     return fillOpacity;
 }
 
+void Group::setStroke(const Color& stroke) {
+    this->stroke = stroke;
+}
+
 Color Group::getStroke() const {
     return stroke;
 }
 
+void Group::setStrokeWidth(float strokeWidth) {
+    this->strokeWidth = strokeWidth;
+}
+
 float Group::getStrokeWidth() const {
     return strokeWidth;
+}
+
+void Group::setStrokeOpacity(float strokeOpacity) {
+    this->strokeOpacity = strokeOpacity;
 }
 
 float Group::getStrokeOpacity() const {
@@ -41,22 +62,6 @@ int Group::getFontSize() const {
     return fontSize;
 }
 
-void Group::draw(Graphics& g) {
-    if (transform == nullptr) return;
+void Group::draw(Graphics& g) {}
 
-    for (Shape* subShape : children) {
-        if (!subShape) continue;
-
-        MyTransform* groupTransform = this->getTransform();
-        MyTransform* shapeTransform = subShape->getTransform();
-
-        if (groupTransform && shapeTransform) {
-            MyTransform* combined = new MyTransform(*shapeTransform);
-            combined->combineWith(*groupTransform);
-            subShape->setTransform(combined);
-        }
-
-        subShape->draw(g);
-    }
-}
 

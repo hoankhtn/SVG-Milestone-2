@@ -58,35 +58,8 @@ float Circle::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void Circle::draw(Graphics& graphics) {
-    if (!transform) return;
+void Circle::draw(Graphics& graphics) {}
 
-    float sx = transform->getScale().getPointX();
-    float sy = transform->getScale().getPointY();
-    float tx = transform->getTranslate().getPointX();
-    float ty = transform->getTranslate().getPointY();
-    float rotate = transform->getRotate();
-
-    Matrix m;
-    m.Scale(sx, sy);
-    m.Rotate(rotate);
-    m.Translate(tx, ty);
-
-    PointF center((REAL)cx, (REAL)cy);
-    m.TransformPoints(&center, 1);
-
-    float scaledR = r * ((sx + sy) / 2.0f);
-
-    SolidBrush fillBrush(Color((BYTE)(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB()));
-    graphics.FillEllipse(&fillBrush,
-        center.X - scaledR, center.Y - scaledR,
-        2 * scaledR, 2 * scaledR);
-
-    Pen strokePen(Color((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB()), strokeWidth);
-    graphics.DrawEllipse(&strokePen,
-        center.X - scaledR, center.Y - scaledR,
-        2 * scaledR, 2 * scaledR);
-}
 
 
 

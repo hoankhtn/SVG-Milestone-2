@@ -49,37 +49,6 @@ float MyPolygon::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void MyPolygon::draw(Graphics& graphics) {
-    if (!transform) return;
-    if (pts.size() < 3) return;
+void MyPolygon::draw(Graphics& graphics) {}
 
-    float sx = transform->getScale().getPointX();
-    float sy = transform->getScale().getPointY();
-    float tx = transform->getTranslate().getPointX();
-    float ty = transform->getTranslate().getPointY();
-    float rotate = transform->getRotate();
-
-    Matrix m;
-    m.Scale(sx, sy);
-    m.Rotate(rotate);
-    m.Translate(tx, ty);
-
-    vector<PointF> pointsF;
-    for (const auto& pt : pts) {
-        pointsF.emplace_back(PointF(pt.getPointX(), pt.getPointY()));
-    }
-    m.TransformPoints(pointsF.data(), static_cast<INT>(pointsF.size()));
-
-    if (fillOpacity > 0.0f) {
-        Color fillColor((BYTE)(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
-        SolidBrush brush(fillColor);
-        graphics.FillPolygon(&brush, pointsF.data(), static_cast<INT>(pointsF.size()));
-    }
-
-    if (strokeOpacity > 0.0f && strokeWidth > 0.0f) {
-        Color strokeColor((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-        Pen pen(strokeColor, strokeWidth);
-        graphics.DrawPolygon(&pen, pointsF.data(), static_cast<INT>(pointsF.size()));
-    }
-}
 

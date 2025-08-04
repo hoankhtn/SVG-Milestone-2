@@ -2,52 +2,63 @@
 #include "Resource.h"
 
 MyTransform::MyTransform() {
-    translateX = 0.0f;
-    translateY = 0.0f;
-    scaleX = 1.0f;
-    scaleY = 1.0f;
-    rotateD = 0.0f;
+    matrix = new Matrix();
+    matrix->Reset();
+}
+
+//Copy constructor
+MyTransform::MyTransform(const MyTransform& other) {
+    matrix = other.matrix->Clone();
+}
+
+MyTransform& MyTransform::operator=(const MyTransform& other) {
+    if (this != &other) {
+        delete matrix;
+        matrix = other.matrix->Clone();
+    }
+    return *this;
+}
+
+MyTransform::~MyTransform() {
+    delete matrix;
 }
 
 // Setter
 void MyTransform::setTranslate(float tx, float ty) {
-    translateX = tx;
-    translateY = ty;
+    Matrix m;
+    m.Translate(tx, ty);
+    matrix->Multiply(&m, MatrixOrderAppend);
 }
 
 void MyTransform::setScale(float sx, float sy) {
-    scaleX = sx;
-    scaleY = sy;
+    Matrix m;
+    m.Scale(sx, sy);
+    matrix->Multiply(&m, MatrixOrderAppend);
 }
 
 void MyTransform::setUniformScale(float s) {
-    scaleX = s;
-    scaleY = s;
+    setScale(s, s);
 }
 
 void MyTransform::setRotate(float degrees) {
-    rotateD = degrees;
+    Matrix m;
+    m.Rotate(degrees);
+    matrix->Multiply(&m, MatrixOrderAppend);
 }
 
-// Getter
-Point2D MyTransform::getTranslate() const {
-    return Point2D(translateX, translateY);
+void MyTransform::combineWith(MyTransform* other) {
+    if (!other) return;
+    matrix->Multiply(other->matrix, MatrixOrderAppend);
 }
 
-Point2D MyTransform::getScale() const {
-    return Point2D(scaleX, scaleY);
+const Matrix& MyTransform::getMatrix() const {
+    return *matrix;
 }
 
-float MyTransform::getRotate() const {
-    return rotateD;
+void MyTransform::applyTo(Graphics& g) const {
+    g.MultiplyTransform(matrix, MatrixOrderAppend);
 }
 
-void MyTransform::combineWith(const MyTransform& other) {
-    scaleX *= other.scaleX;
-    scaleY *= other.scaleY;
-
-    rotateD += other.rotateD;
-
-    translateX += other.translateX;
-    translateY += other.translateY;
+MyTransform* MyTransform::clone() const {
+    return new MyTransform(*this);
 }

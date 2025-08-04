@@ -19,7 +19,15 @@ void BackgroundDecorator::draw(Graphics& graphics)
         Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
         SolidBrush brush(fillColor);
 
-        graphics.FillEllipse(&brush, cx - r, cy - r, 2 * r, 2 * r);
+        if (MyTransform* circleTransform = circle->getTransform()) {
+            GraphicsState state = graphics.Save();
+            circleTransform->applyTo(graphics);
+            graphics.FillEllipse(&brush, cx - r, cy - r, 2 * r, 2 * r);
+            graphics.Restore(state);
+        }
+        else {
+            graphics.FillEllipse(&brush, cx - r, cy - r, 2 * r, 2 * r);
+        }
     }
     else if (MyEllipse* ellipse = dynamic_cast<MyEllipse*>(core))
     {
@@ -33,8 +41,17 @@ void BackgroundDecorator::draw(Graphics& graphics)
         Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
         SolidBrush brush(fillColor);
 
-        graphics.FillEllipse(&brush, cx - rx, cy - ry, 2 * rx, 2 * ry);
+        if (MyTransform* ellipseTransform = ellipse->getTransform()) {
+            GraphicsState state = graphics.Save();
+            ellipseTransform->applyTo(graphics);
+            graphics.FillEllipse(&brush, cx - rx, cy - ry, 2 * rx, 2 * ry);
+            graphics.Restore(state);
+        }
+        else {
+            graphics.FillEllipse(&brush, cx - rx, cy - ry, 2 * rx, 2 * ry);
+        }
     }
+
     else if (MyRectangle* rect = dynamic_cast<MyRectangle*>(core))
     {
         int x = rect->getX();
@@ -47,8 +64,17 @@ void BackgroundDecorator::draw(Graphics& graphics)
         Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
         SolidBrush brush(fillColor);
 
-        graphics.FillRectangle(&brush, x, y, w, h);
+        if (MyTransform* rectTransform = rect->getTransform()) {
+            GraphicsState state = graphics.Save();
+            rectTransform->applyTo(graphics);
+            graphics.FillRectangle(&brush, x, y, w, h);
+            graphics.Restore(state);
+        }
+        else {
+            graphics.FillRectangle(&brush, x, y, w, h);
+        }
     }
+
     else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(core))
     {
         const auto& points = polygon->getPoints();
@@ -68,9 +94,19 @@ void BackgroundDecorator::draw(Graphics& graphics)
         {
             Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
             SolidBrush brush(fillColor);
-            graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size());
+
+            if (MyTransform* polyTransform = polygon->getTransform()) {
+                GraphicsState state = graphics.Save();
+                polyTransform->applyTo(graphics);
+                graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size());
+                graphics.Restore(state);
+            }
+            else {
+                graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size());
+            }
         }
     }
+
     else if (MyPolyline* polyline = dynamic_cast<MyPolyline*>(core))
     {
         const auto& points = polyline->getPoints();
@@ -90,9 +126,19 @@ void BackgroundDecorator::draw(Graphics& graphics)
         {
             Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
             SolidBrush brush(fillColor);
-            graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size()); 
+
+            if (MyTransform* polyTransform = polyline->getTransform()) {
+                GraphicsState state = graphics.Save();
+                polyTransform->applyTo(graphics);
+                graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size());
+                graphics.Restore(state);
+            }
+            else {
+                graphics.FillPolygon(&brush, gdipPoints.data(), (INT)gdipPoints.size());
+            }
         }
     }
+
     else if (Path* path = dynamic_cast<Path*>(core))
     {
         const auto& commands = path->getCommands();
@@ -122,68 +168,82 @@ void BackgroundDecorator::draw(Graphics& graphics)
             {
                 Color fillColor(static_cast<BYTE>(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
                 SolidBrush brush(fillColor);
-                graphics.FillPath(&brush, &gpath);
+
+                if (MyTransform* pathTransform = path->getTransform()) {
+                    GraphicsState state = graphics.Save();
+                    pathTransform->applyTo(graphics);
+                    graphics.FillPath(&brush, &gpath);
+                    graphics.Restore(state);
+                }
+                else {
+                    graphics.FillPath(&brush, &gpath);
+                }
             }
         }
     }
+
     else if (Group* group = dynamic_cast<Group*>(core))
     {
         Color groupFill = group->getFill();
         float groupFillOpacity = group->getFillOpacity();
 
+        GraphicsState groupState = graphics.Save(); 
+        if (MyTransform* groupTransform = group->getTransform()) {
+            groupTransform->applyTo(graphics);     
+        }
+
         for (Shape* subShape : group->getChildren())
         {
             if (!subShape) continue;
 
-            // Circle
-            if (Circle* circle = dynamic_cast<Circle*>(subShape)) {
+            if (auto circle = dynamic_cast<Circle*>(subShape)) {
                 if (circle->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     circle->setFill(groupFill);
-
                 if (circle->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     circle->setFillOpacity(groupFillOpacity);
             }
-
-            // Ellipse
-            else if (MyEllipse* ellipse = dynamic_cast<MyEllipse*>(subShape)) {
+            else if (auto ellipse = dynamic_cast<MyEllipse*>(subShape)) {
                 if (ellipse->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     ellipse->setFill(groupFill);
-
                 if (ellipse->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     ellipse->setFillOpacity(groupFillOpacity);
             }
-
-            // Rectangle
-            else if (MyRectangle* rectangle = dynamic_cast<MyRectangle*>(subShape)) {
-                if (rectangle->getFill().GetA() == 0 && groupFill.GetA() > 0)
-                    rectangle->setFill(groupFill);
-
-                if (rectangle->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
-                    rectangle->setFillOpacity(groupFillOpacity);
+            else if (auto rect = dynamic_cast<MyRectangle*>(subShape)) {
+                if (rect->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    rect->setFill(groupFill);
+                if (rect->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    rect->setFillOpacity(groupFillOpacity);
             }
-
-            // Polyline
-            else if (MyPolyline* polyline = dynamic_cast<MyPolyline*>(subShape)) {
+            else if (auto polyline = dynamic_cast<MyPolyline*>(subShape)) {
                 if (polyline->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     polyline->setFill(groupFill);
-
                 if (polyline->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     polyline->setFillOpacity(groupFillOpacity);
             }
-
-            // Polygon
-            else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(subShape)) {
+            else if (auto polygon = dynamic_cast<MyPolygon*>(subShape)) {
                 if (polygon->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     polygon->setFill(groupFill);
-
                 if (polygon->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     polygon->setFillOpacity(groupFillOpacity);
             }
+            else if (auto path = dynamic_cast<Path*>(subShape)) {
+                if (path->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    path->setFill(groupFill);
+                if (path->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    path->setFillOpacity(groupFillOpacity);
+            }
+            else if (auto childGroup = dynamic_cast<Group*>(subShape)) {
+                if (childGroup->getFill().GetA() == 0 && groupFill.GetA() > 0)
+                    childGroup->setFill(groupFill);
+                if (childGroup->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
+                    childGroup->setFillOpacity(groupFillOpacity);
+            }
 
-            // Decorator
             BackgroundDecorator decorator(subShape);
             decorator.draw(graphics);
         }
+
+        graphics.Restore(groupState); 
     }
 
     if (shape)

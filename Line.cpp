@@ -45,30 +45,5 @@ float Line::getStrokeOpacity() const {
     return this->strokeOpacity;
 }
 
-void Line::draw(Graphics& graphics) {
-    if (transform == nullptr) return;
+void Line::draw(Graphics& graphics) {}
 
-    float sx = transform->getScale().getPointX();
-    float sy = transform->getScale().getPointY();
-    float tx = transform->getTranslate().getPointX();
-    float ty = transform->getTranslate().getPointY();
-    float rotate = transform->getRotate();
-
-    Matrix m;
-    m.Scale(sx, sy);
-    m.Rotate(rotate);
-    m.Translate(tx, ty);
-
-    PointF points[2] = {
-        PointF((REAL)x1, (REAL)y1),
-        PointF((REAL)x2, (REAL)y2)
-    };
-    m.TransformPoints(points, 2);
-
-    Color strokeColor((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-    Pen pen(strokeColor, strokeWidth);
-
-    graphics.DrawLine(&pen,
-        points[0].X, points[0].Y,
-        points[1].X, points[1].Y);
-}

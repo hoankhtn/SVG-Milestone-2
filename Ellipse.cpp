@@ -63,36 +63,6 @@ float MyEllipse::getStrokeOpacity() const {
 }
 
 
-void MyEllipse::draw(Graphics& graphics) {
-    if (transform == nullptr) return;
+void MyEllipse::draw(Graphics& graphics) {}
 
-    float sx = transform->getScale().getPointX();
-    float sy = transform->getScale().getPointY();
-    float tx = transform->getTranslate().getPointX();
-    float ty = transform->getTranslate().getPointY();
-    float rotate = transform->getRotate();
-
-    Matrix m;
-    m.Scale(sx, sy);
-    m.Rotate(rotate);
-    m.Translate(tx, ty);
-
-    PointF center((REAL)(cx), (REAL)(cy));
-    m.TransformPoints(&center, 1);
-
-    float scaledRx = rx * sx;
-    float scaledRy = ry * sy;
-
-    Color fillColor((BYTE)(fillOpacity * 255), fill.GetR(), fill.GetG(), fill.GetB());
-    SolidBrush fillBrush(fillColor);
-    graphics.FillEllipse(&fillBrush,
-        center.X - scaledRx, center.Y - scaledRy,
-        2 * scaledRx, 2 * scaledRy);
-
-    Color strokeColor((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-    Pen strokePen(strokeColor, strokeWidth);
-    graphics.DrawEllipse(&strokePen,
-        center.X - scaledRx, center.Y - scaledRy,
-        2 * scaledRx, 2 * scaledRy);
-}
 

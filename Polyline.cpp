@@ -53,30 +53,4 @@ float MyPolyline::getStrokeOpacity() const {
 }
 
 
-void MyPolyline::draw(Graphics& graphics) {
-    if (!transform) return;
-    if (pts.size() < 2) return;
-
-    float sx = transform->getScale().getPointX();
-    float sy = transform->getScale().getPointY();
-    float tx = transform->getTranslate().getPointX();
-    float ty = transform->getTranslate().getPointY();
-    float rotate = transform->getRotate();
-
-    Matrix m;
-    m.Scale(sx, sy);
-    m.Rotate(rotate);
-    m.Translate(tx, ty);
-
-    vector<PointF> pointsF;
-    for (const auto& pt : pts) {
-        pointsF.emplace_back(PointF(pt.getPointX(), pt.getPointY()));
-    }
-    m.TransformPoints(pointsF.data(), static_cast<INT>(pointsF.size()));
-
-    if (strokeOpacity > 0.0f && strokeWidth > 0.0f) {
-        Color strokeColor((BYTE)(strokeOpacity * 255), stroke.GetR(), stroke.GetG(), stroke.GetB());
-        Pen pen(strokeColor, strokeWidth);
-        graphics.DrawLines(&pen, pointsF.data(), static_cast<INT>(pointsF.size()));
-    }
-}
+void MyPolyline::draw(Graphics& graphics) {}

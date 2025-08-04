@@ -31,12 +31,42 @@ Color ReadFileSVG::parseColor(const char* colorStr, float opacity)
         {"lightgray", Color(alpha, 211, 211, 211)},
         {"orange", Color(alpha, 255, 165, 0)},
         {"purple", Color(alpha, 128, 0, 128)},
-        {"brown", Color(alpha, 165, 42, 42)}
+        {"brown", Color(alpha, 165, 42, 42)},
+        {"sky-blue", Color(alpha, 135, 206, 235)},
+        {"deeppink", Color(alpha, 255, 20, 147)},
+        {"lime", Color(alpha, 0, 255, 0)},
+        {"navy", Color(alpha, 0, 0, 128)},
+        {"teal", Color(alpha, 0, 128, 128)},
+        {"aqua", Color(alpha, 0, 255, 255)},
     };
 
     auto it = namedColors.find(name);
     if (it != namedColors.end()) {
         return it->second;
+    }
+
+    if (colorStr[0] == '#') {
+        unsigned int hex = 0;
+        if (strlen(colorStr) == 7 && sscanf_s(colorStr + 1, "%06x", &hex) == 1) {
+            r = (hex >> 16) & 0xFF;
+            g = (hex >> 8) & 0xFF;
+            b = hex & 0xFF;
+            return Color(alpha, r, g, b);
+        }
+        else if (strlen(colorStr) == 4) { 
+            int r1, g1, b1;
+            if (sscanf_s(colorStr + 1, "%1x%1x%1x", &r1, &g1, &b1) == 3) {
+                r = (r1 << 4) | r1;
+                g = (g1 << 4) | g1;
+                b = (b1 << 4) | b1;
+                return Color(alpha, r, g, b);
+            }
+        }
+    }
+
+    float fr = 0, fg = 0, fb = 0, fa = 1.0f;
+    if (sscanf_s(colorStr, "rgba(%f,%f,%f,%f)", &fr, &fg, &fb, &fa) == 4) {
+        return Color(static_cast<BYTE>(fa * 255), static_cast<int>(fr), static_cast<int>(fg), static_cast<int>(fb));
     }
 
     return Color(Color::Black);
@@ -549,8 +579,8 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     cout << "StrokeWidth: " << strokeWidth << '\n';
     cout << "StrokeOpacity: " << strokeOpacity << '\n';
     for (xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
-        string name = child->name();
         Shape* s = nullptr;
+        string name = child->name();
 
         if (name == "rect") {
             s = parseRectangle(child);
