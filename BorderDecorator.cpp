@@ -215,7 +215,8 @@ void BorderDecorator::draw(Graphics& graphics)
         float groupStrokeOpacity = group->getStrokeOpacity();
 
         GraphicsState groupState = graphics.Save();
-        if (MyTransform* groupTransform = group->getTransform()) {
+        MyTransform* groupTransform = group->getTransform();
+        if (groupTransform) {
             groupTransform->applyTo(graphics);
         }
 
@@ -280,14 +281,18 @@ void BorderDecorator::draw(Graphics& graphics)
                     path->setStrokeOpacity(groupStrokeOpacity);
             }
             else if (auto childGroup = dynamic_cast<Group*>(subShape)) {
+                if (MyTransform* childTransform = childGroup->getTransform())
+                    childTransform->combineWith(groupTransform);
                 if (childGroup->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
                     childGroup->setStroke(groupStroke);
                 if (childGroup->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
                     childGroup->setStrokeWidth(groupStrokeWidth);
                 if (childGroup->getStrokeOpacity() == 1.0f && groupStrokeOpacity < 1.0f)
                     childGroup->setStrokeOpacity(groupStrokeOpacity);
-            }
 
+                BorderDecorator nestedDecorator(childGroup);
+                nestedDecorator.draw(graphics);
+            }
             // Draw with decorator
             BorderDecorator decorator(subShape);
             decorator.draw(graphics);

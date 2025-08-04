@@ -107,7 +107,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR lpCmdLine, INT iCmdShow)
 
     /*string fileName = lpCmdLine;*/
     LoadFileSVG loader;
-    loader.LoadSVG("svg-11.svg");
+    loader.LoadSVG("svg-18.svg");
 
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;

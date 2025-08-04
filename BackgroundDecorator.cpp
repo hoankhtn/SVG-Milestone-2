@@ -188,7 +188,8 @@ void BackgroundDecorator::draw(Graphics& graphics)
         float groupFillOpacity = group->getFillOpacity();
 
         GraphicsState groupState = graphics.Save(); 
-        if (MyTransform* groupTransform = group->getTransform()) {
+        MyTransform* groupTransform = group->getTransform() != nullptr ? group->getTransform() : nullptr;
+        if (groupTransform) {
             groupTransform->applyTo(graphics);     
         }
 
@@ -197,46 +198,63 @@ void BackgroundDecorator::draw(Graphics& graphics)
             if (!subShape) continue;
 
             if (auto circle = dynamic_cast<Circle*>(subShape)) {
+                if (MyTransform* circleTransform = circle->getTransform())
+                    circleTransform->combineWith(groupTransform);
                 if (circle->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     circle->setFill(groupFill);
                 if (circle->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     circle->setFillOpacity(groupFillOpacity);
             }
             else if (auto ellipse = dynamic_cast<MyEllipse*>(subShape)) {
+                if (MyTransform* ellipseTransform = ellipse->getTransform())
+                    ellipseTransform->combineWith(groupTransform);
                 if (ellipse->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     ellipse->setFill(groupFill);
                 if (ellipse->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     ellipse->setFillOpacity(groupFillOpacity);
             }
             else if (auto rect = dynamic_cast<MyRectangle*>(subShape)) {
+                if (MyTransform* rectTransform = rect->getTransform())
+                    rectTransform->combineWith(groupTransform);
                 if (rect->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     rect->setFill(groupFill);
                 if (rect->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     rect->setFillOpacity(groupFillOpacity);
             }
             else if (auto polyline = dynamic_cast<MyPolyline*>(subShape)) {
+                if (MyTransform* polylineTransform = polyline->getTransform())
+                    polylineTransform->combineWith(groupTransform);
                 if (polyline->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     polyline->setFill(groupFill);
                 if (polyline->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     polyline->setFillOpacity(groupFillOpacity);
             }
             else if (auto polygon = dynamic_cast<MyPolygon*>(subShape)) {
+                if (MyTransform* polygonTransform = polygon->getTransform())
+                    polygonTransform->combineWith(groupTransform);
                 if (polygon->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     polygon->setFill(groupFill);
                 if (polygon->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     polygon->setFillOpacity(groupFillOpacity);
             }
             else if (auto path = dynamic_cast<Path*>(subShape)) {
+                if (MyTransform* pathTransform = path->getTransform())
+                    pathTransform->combineWith(groupTransform);
                 if (path->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     path->setFill(groupFill);
                 if (path->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     path->setFillOpacity(groupFillOpacity);
             }
             else if (auto childGroup = dynamic_cast<Group*>(subShape)) {
+                if (MyTransform* childTransform = childGroup->getTransform())
+                    childTransform->combineWith(groupTransform);
                 if (childGroup->getFill().GetA() == 0 && groupFill.GetA() > 0)
                     childGroup->setFill(groupFill);
                 if (childGroup->getFillOpacity() == 1.0f && groupFillOpacity < 1.0f)
                     childGroup->setFillOpacity(groupFillOpacity);
+
+                BackgroundDecorator nestedDecorator(childGroup);
+                nestedDecorator.draw(graphics);
             }
 
             BackgroundDecorator decorator(subShape);

@@ -48,7 +48,7 @@ void MyTransform::setRotate(float degrees) {
 
 void MyTransform::combineWith(MyTransform* other) {
     if (!other) return;
-    matrix->Multiply(other->matrix, MatrixOrderAppend);
+    matrix->Multiply(other->matrix, MatrixOrderPrepend);
 }
 
 const Matrix& MyTransform::getMatrix() const {
