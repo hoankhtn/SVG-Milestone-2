@@ -1,8 +1,9 @@
 #include "Polygon.h"
 
-MyPolygon::MyPolygon(const Color& fill, float fillOpacity, const vector<Point2D>& pts, const Color& stroke, float strokeWidth, float strokeOpacity)
+MyPolygon::MyPolygon(const Color& fill, float fillOpacity, const vector<Point2D>& pts, const Color& stroke, float strokeWidth, float strokeOpacity, MyTransform* polyTransform)
     : fill(fill), fillOpacity(fillOpacity), pts(pts), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity)
 {
+    transform = polyTransform;
 }
 
 vector<Point2D> MyPolygon::getPoints() const {

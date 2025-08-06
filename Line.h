@@ -8,7 +8,7 @@ class Line : public Shape
 	float strokeWidth;
 	float strokeOpacity;
 public:
-	Line(int, int, int, int, const Color&, float, float);
+	Line(int, int, int, int, const Color&, float, float, MyTransform*);
 	int getX1() const;
 	int getX2() const;
 	int getY1() const;

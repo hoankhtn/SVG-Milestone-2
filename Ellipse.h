@@ -25,7 +25,7 @@ public:
 	float getStrokeWidth() const;
 	void setStrokeOpacity(float);
 	float getStrokeOpacity() const;
-	MyEllipse(int, int, int, int, const Color&, float, const Color&, float, float);
+	MyEllipse(int, int, int, int, const Color&, float, const Color&, float, float, MyTransform*);
 	void draw(Graphics&) override;
 };
 

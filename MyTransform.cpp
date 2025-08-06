@@ -2,8 +2,7 @@
 #include "Resource.h"
 
 MyTransform::MyTransform() {
-    matrix = new Matrix();
-    matrix->Reset();
+    matrix = new Matrix(1, 0, 0, 1, 0, 0);
 }
 
 //Copy constructor
@@ -21,17 +20,18 @@ MyTransform& MyTransform::operator=(const MyTransform& other) {
 
 MyTransform::~MyTransform() {
     delete matrix;
+    matrix = nullptr;
 }
 
 // Setter
 void MyTransform::setTranslate(float tx, float ty) {
-    Matrix m;
+    Matrix m(1, 0, 0, 1, 0, 0);
     m.Translate(tx, ty);
     matrix->Multiply(&m, MatrixOrderAppend);
 }
 
 void MyTransform::setScale(float sx, float sy) {
-    Matrix m;
+    Matrix m(1, 0, 0, 1, 0, 0);
     m.Scale(sx, sy);
     matrix->Multiply(&m, MatrixOrderAppend);
 }
@@ -41,7 +41,7 @@ void MyTransform::setUniformScale(float s) {
 }
 
 void MyTransform::setRotate(float degrees) {
-    Matrix m;
+    Matrix m(1, 0, 0, 1, 0, 0);
     m.Rotate(degrees);
     matrix->Multiply(&m, MatrixOrderAppend);
 }

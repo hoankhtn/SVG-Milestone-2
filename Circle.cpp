@@ -1,9 +1,10 @@
 ﻿#include "Circle.h"
 #include "ReadFileSVG.h"
 
-Circle::Circle(int cx, int cy, int r, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity)
+Circle::Circle(int cx, int cy, int r, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity, MyTransform* circleTransform)
     : cx(cx), cy(cy), r(r), fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity)
 {
+    transform = circleTransform;
 }
 
 int Circle::getCx() const {

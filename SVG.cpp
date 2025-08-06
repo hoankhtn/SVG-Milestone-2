@@ -55,11 +55,14 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
         else if (name == "g") {
             shape = reader.parseGroup(node);
         }
-
         if (shape) {
+            if (name == "g")
+                shapes.push_back(shape);
+
             if (name != "line" && name != "text") {
                 shape = new BorderDecorator(shape);        
                 shape = new BackgroundDecorator(shape);
+                /*shape = new BorderDecorator(shape);*/
             }
             else if (name != "text") {
                 shape = new BorderDecorator(shape);
@@ -72,14 +75,22 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
     }
 }
 
-//int main() {
-//    LoadFileSVG loader;
-//    loader.LoadSVG("svg-11.svg");
-//    for (Shape* shape : shapes)
-//        delete shape;
-//    shapes.clear();
-//    return 0;
-//}
+int main() {
+    HWND                hWnd;
+    MSG                 msg;
+    WNDCLASS            wndClass;
+    GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR           gdiplusToken;
+
+    // Initialize GDI+.
+    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+    LoadFileSVG loader;
+    loader.LoadSVG("svg-11.svg");
+
+    GdiplusShutdown(gdiplusToken);
+    return 0;
+}
 
 VOID OnPaint(HDC hdc)
 {
@@ -107,7 +118,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR lpCmdLine, INT iCmdShow)
 
     /*string fileName = lpCmdLine;*/
     LoadFileSVG loader;
-    loader.LoadSVG("svg-18.svg");
+    loader.LoadSVG("svg-11.svg");
 
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;

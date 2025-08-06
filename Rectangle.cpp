@@ -1,8 +1,9 @@
 #include "Rectangle.h"
 
-MyRectangle::MyRectangle(int x, int y, int width, int height, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity)
+MyRectangle::MyRectangle(int x, int y, int width, int height, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity, MyTransform* rectTransform)
     : x(x), y(y), width(width), height(height), fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity)
 {
+    transform = rectTransform;
 }
 
 int MyRectangle::getX() const {

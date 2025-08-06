@@ -1,9 +1,10 @@
 #include "Ellipse.h"
 #include "Circle.h"
 
-MyEllipse::MyEllipse(int cx, int cy, int rx, int ry, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity)
+MyEllipse::MyEllipse(int cx, int cy, int rx, int ry, const Color& fill, float fillOpacity, const Color& stroke, float strokeWidth, float strokeOpacity, MyTransform* ellipseTransform)
     : cx(cx), cy(cy), rx(rx), ry(ry), fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity)
 {
+    transform = ellipseTransform;
 }
 
 int MyEllipse::getCx() const {

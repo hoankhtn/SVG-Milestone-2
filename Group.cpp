@@ -3,15 +3,22 @@
 
 Group::Group(vector<Shape*> children,
     const Color& fill, float fillOpacity,
-    const Color& stroke, float strokeWidth, float strokeOpacity, int fontSize)
+    const Color& stroke, float strokeWidth, float strokeOpacity, int fontSize, MyTransform* groupTransform)
 {
-    this->children = children;
+    this->children.clear();
+    for (auto* child : children) {
+        if (child) {
+            this->children.push_back(child);
+        }
+	}
     this->fill = fill;
     this->fillOpacity = fillOpacity;
     this->stroke = stroke;
     this->strokeWidth = strokeWidth;
     this->strokeOpacity = strokeOpacity;
     this->fontSize = fontSize;
+
+    transform = groupTransform;
 }
 
 vector<Shape*> Group::getChildren() const {
@@ -62,6 +69,5 @@ int Group::getFontSize() const {
     return fontSize;
 }
 
-void Group::draw(Graphics& g) {}
-
+void Group::draw(Graphics& graphics) {}
 

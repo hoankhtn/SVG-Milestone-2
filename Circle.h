@@ -24,7 +24,7 @@ public:
 	float getStrokeWidth() const;
 	void setStrokeOpacity(float);
 	float getStrokeOpacity() const;
-	Circle(int, int, int, const Color&, float, const Color&, float, float);
+	Circle(int, int, int, const Color&, float, const Color&, float, float, MyTransform*);
 	void draw(Graphics&) override;
 };
 

@@ -24,7 +24,7 @@ public:
 	void setStrokeOpacity(float);
 	float getStrokeOpacity() const;
 	int getFontSize() const;
-	Group(vector <Shape*>, const Color&, float, const Color&, float, float, int);
+	Group(vector <Shape*>, const Color&, float, const Color&, float, float, int, MyTransform*);
 
 	void draw(Graphics&) override;
 };

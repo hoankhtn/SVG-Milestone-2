@@ -1,11 +1,13 @@
 #include "Polyline.h"
 
-MyPolyline::MyPolyline(const Color& fill, float fillOpacity, const std::vector<POINT>& pts, const Color& stroke, float strokeWidth, float strokeOpacity)
+MyPolyline::MyPolyline(const Color& fill, float fillOpacity, const std::vector<POINT>& pts, const Color& stroke, float strokeWidth, float strokeOpacity, MyTransform* polyTransform)
     : fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity)
 {
     for (const POINT& p : pts) {
         this->pts.emplace_back(Point2D(static_cast<float>(p.x), static_cast<float>(p.y)));
     }
+
+    transform = polyTransform;
 }
 
 vector<Point2D> MyPolyline::getPoints() const {

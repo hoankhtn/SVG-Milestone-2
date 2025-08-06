@@ -187,10 +187,10 @@ void BackgroundDecorator::draw(Graphics& graphics)
         Color groupFill = group->getFill();
         float groupFillOpacity = group->getFillOpacity();
 
-        GraphicsState groupState = graphics.Save(); 
+        GraphicsState groupState = graphics.Save();
         MyTransform* groupTransform = group->getTransform() != nullptr ? group->getTransform() : nullptr;
         if (groupTransform) {
-            groupTransform->applyTo(graphics);     
+            groupTransform->applyTo(graphics);
         }
 
         for (Shape* subShape : group->getChildren())
@@ -261,7 +261,7 @@ void BackgroundDecorator::draw(Graphics& graphics)
             decorator.draw(graphics);
         }
 
-        graphics.Restore(groupState); 
+        graphics.Restore(groupState);
     }
 
     if (shape)

@@ -11,7 +11,7 @@ private:
 	float strokeWidth;
 	float strokeOpacity;
 public:
-	MyRectangle(int, int, int, int, const Color&, float, const Color&, float, float);
+	MyRectangle(int, int, int, int, const Color&, float, const Color&, float, float, MyTransform*);
 	int getX() const;
 	int getY() const;
 	int getWidth() const;

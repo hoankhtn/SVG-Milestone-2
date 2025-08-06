@@ -30,11 +30,6 @@ public:
         return *this;
     }
 
-    void setTransform(MyTransform* t) {
-        if (transform) delete transform;
-        transform = t;
-    }
-
     MyTransform* getTransform() const {
         return transform;
     }

@@ -12,7 +12,7 @@ private:
 	float strokeWidth;
 	float strokeOpacity;
 public:
-	MyPolygon(const Color&, float, const vector<Point2D>&, const Color&, float , float);
+	MyPolygon(const Color&, float, const vector<Point2D>&, const Color&, float , float, MyTransform*);
 	void setFill(const Color&);
 	Color getFill() const;
 	void setFillOpacity(float);

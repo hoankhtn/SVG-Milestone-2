@@ -15,7 +15,7 @@ private:
 	float strokeWidth;
 	float strokeOpacity;
 public:
-	Path(const vector<PathCommand*>&, Color, float, Color, float, float);
+	Path(const vector<PathCommand*>&, Color, float, Color, float, float, MyTransform*);
 	vector<PathCommand*> getCommands() const;
 	void setFill(const Color&);
 	Color getFill() const;

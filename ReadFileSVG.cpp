@@ -118,6 +118,11 @@ ReadFileSVG::ReadFileSVG(const string& fileName) : fileName(fileName)
 }
 
 Shape* ReadFileSVG::parseRectangle(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     int x = parseInt(node->first_attribute("x") ? node->first_attribute("x")->value() : nullptr);
     int y = parseInt(node->first_attribute("y") ? node->first_attribute("y")->value() : nullptr);
     int width = parseInt(node->first_attribute("width") ? node->first_attribute("width")->value() : nullptr);
@@ -144,14 +149,15 @@ Shape* ReadFileSVG::parseRectangle(xml_node<>* node) {
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
 
-    MyTransform* tf = parseTransform(node);
-    MyRectangle* rectangle = new MyRectangle(x, y, width, height, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
-    if (tf) rectangle->setTransform(tf);
-
-    return rectangle;
+    return new MyRectangle(x, y, width, height, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parseCircle(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     int cx = parseInt(node->first_attribute("cx") ? node->first_attribute("cx")->value() : nullptr);
     int cy = parseInt(node->first_attribute("cy") ? node->first_attribute("cy")->value() : nullptr);
     int r = parseInt(node->first_attribute("r") ? node->first_attribute("r")->value() : nullptr);
@@ -176,14 +182,15 @@ Shape* ReadFileSVG::parseCircle(xml_node<>* node) {
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
 
-    MyTransform* tf = parseTransform(node);
-    Circle* circle = new Circle(cx, cy, r, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
-    if (tf) circle->setTransform(tf);
-
-    return circle;
+    return new Circle(cx, cy, r, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parseEllipse(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     int cx = parseInt(node->first_attribute("cx") ? node->first_attribute("cx")->value() : nullptr);
     int cy = parseInt(node->first_attribute("cy") ? node->first_attribute("cy")->value() : nullptr);
     int rx = parseInt(node->first_attribute("rx") ? node->first_attribute("rx")->value() : nullptr);
@@ -210,14 +217,15 @@ Shape* ReadFileSVG::parseEllipse(xml_node<>* node) {
     cout << "fillStr: " << fillStr << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
 
-    MyTransform* tf = parseTransform(node);
-    MyEllipse* ellipse = new MyEllipse(cx, cy, rx, ry, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
-    if (tf) ellipse->setTransform(tf);
-
-    return ellipse;
+    return new MyEllipse(cx, cy, rx, ry, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parseLine(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     int x1 = parseInt(node->first_attribute("x1") ? node->first_attribute("x1")->value() : nullptr);
     int y1 = parseInt(node->first_attribute("y1") ? node->first_attribute("y1")->value() : nullptr);
     int x2 = parseInt(node->first_attribute("x2") ? node->first_attribute("x2")->value() : nullptr);
@@ -236,14 +244,16 @@ Shape* ReadFileSVG::parseLine(xml_node<>* node) {
     cout << "strokeOpacity: " << strokeOpacity << '\n';
     cout << "strokeWidth: " << strokeWidth << '\n';
     cout << "strokeStr: " << strokeStr << '\n';
-    MyTransform* tf = parseTransform(node);
-    Line* line = new Line(x1, y1, x2, y2, stroke, strokeWidth, strokeOpacity);
-    if (tf) line->setTransform(tf);
-
-    return line;
+    
+    return new Line(x1, y1, x2, y2, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parsePolyline(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     float fillOpacity = parseFloat(node->first_attribute("fill-opacity") ? node->first_attribute("fill-opacity")->value() : nullptr, 1.0f);
     float strokeOpacity = parseFloat(node->first_attribute("stroke-opacity") ? node->first_attribute("stroke-opacity")->value() : nullptr, 1.0f);
     float strokeWidth = parseFloat(node->first_attribute("stroke-width") ? node->first_attribute("stroke-width")->value() : nullptr, 1.0f);
@@ -270,14 +280,16 @@ Shape* ReadFileSVG::parsePolyline(xml_node<>* node) {
     for (auto& pt : ptsPOINT) {
         cout << "(" << pt.x << ", " << pt.y << ")" << '\n';
     }
-    MyTransform* tf = parseTransform(node);
-    MyPolyline* polyline = new MyPolyline(fill, fillOpacity, ptsPOINT, stroke, strokeWidth, strokeOpacity);
-    if (tf) polyline->setTransform(tf);
 
-    return polyline;
+    return new MyPolyline(fill, fillOpacity, ptsPOINT, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parsePolygon(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     float fillOpacity = parseFloat(node->first_attribute("fill-opacity") ? node->first_attribute("fill-opacity")->value() : nullptr, 1.0f);
     float strokeOpacity = parseFloat(node->first_attribute("stroke-opacity") ? node->first_attribute("stroke-opacity")->value() : nullptr, 1.0f);
     float strokeWidth = parseFloat(node->first_attribute("stroke-width") ? node->first_attribute("stroke-width")->value() : nullptr, 1.0f);
@@ -299,14 +311,16 @@ Shape* ReadFileSVG::parsePolygon(xml_node<>* node) {
     for (auto& pt : pts) {
         cout << "(" << pt.getPointX() << ", " << pt.getPointY() << ")" << '\n';
     }
-    MyTransform* tf = parseTransform(node);
-    MyPolygon* polygon = new MyPolygon(fill, fillOpacity, pts, stroke, strokeWidth, strokeOpacity);
-    if (tf) polygon->setTransform(tf);
 
-    return polygon;
+    return new MyPolygon(fill, fillOpacity, pts, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parseText(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     const char* textContent = node->value();
     if (!textContent) textContent = "";
 
@@ -327,11 +341,8 @@ Shape* ReadFileSVG::parseText(xml_node<>* node) {
     cout << "fontSize: " << fontSize << '\n';
     cout << "fillOpacity: " << fillOpacity << '\n';
     cout << "fillStr: " << fillStr << '\n';
-    MyTransform* tf = parseTransform(node);
-    TextDecorator* textDecorator = new TextDecorator(nullptr, wtext, x, y, fill, fontSize);
-    if (tf) textDecorator->setTransform(tf);
 
-    return textDecorator;
+    return new TextDecorator(nullptr, wtext, x, y, fill, fontSize, tf);
 }
 
 bool ReadFileSVG::isLetter(char c) {
@@ -510,6 +521,11 @@ vector<float> ReadFileSVG::parseNumbers(const string& str) {
 }
 
 Shape* ReadFileSVG::parsePath(xml_node<>* node) {
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     const char* d = node->first_attribute("d") ? node->first_attribute("d")->value() : "";
     string value = (string)d;
     vector <string> commands = splitPathCommands(value);
@@ -534,11 +550,7 @@ Shape* ReadFileSVG::parsePath(xml_node<>* node) {
     cout << "FillStr: " << fillStr << '\n';
     cout << "StrokeStr: " << strokeStr << '\n';
 
-    MyTransform* tf = parseTransform(node);
-    Path* path =  new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity);
-    if (tf) path->setTransform(tf);
-
-    return path;
+	return new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
 Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
@@ -549,8 +561,14 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     Color stroke = Color(0, 0, 0);  // Black
     float strokeWidth = 1.0f;
     float strokeOpacity = 1.0f;
-    int fontSize = 1.0f;
+    int fontSize = 1;
+
     cout << "Group\n";
+    MyTransform* tf = nullptr;
+    if (xml_attribute<>* attr = node->first_attribute("transform")) {
+        tf = parseTransform(node);
+    }
+
     if (xml_attribute<>* attr = node->first_attribute("fill")) {
         fill = parseColor(attr->value(), 255);
         cout << "Fill: " << attr->value() << '\n';
@@ -562,7 +580,7 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     }
     if (xml_attribute<>* attr = node->first_attribute("stroke")) {
         stroke = parseColor(attr->value(), 255);
-        cout << "stroke: " << attr->value() << '\n';
+        cout << "Stroke: " << attr->value() << '\n';
     }
     if (xml_attribute<>* attr = node->first_attribute("stroke-width")) {
         strokeWidth = parseFloat(attr->value(), 1.0f);
@@ -573,11 +591,9 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
         stroke = Color(alpha, stroke.GetR(), stroke.GetG(), stroke.GetB());
     }
     if (xml_attribute<>* attr = node->first_attribute("font-size")) {
-        fontSize = parseInt(attr->value(), 1.0f);
+        fontSize = parseInt(attr->value(), 1);
     }
-    cout << "FillOpacity: " << fillOpacity << '\n';
-    cout << "StrokeWidth: " << strokeWidth << '\n';
-    cout << "StrokeOpacity: " << strokeOpacity << '\n';
+
     for (xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
         Shape* s = nullptr;
         string name = child->name();
@@ -590,6 +606,9 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
         }
         else if (name == "ellipse") {
             s = parseEllipse(child);
+        }
+        else if (name == "path") {
+            s = parsePath(child);
         }
         else if (name == "line") {
             s = parseLine(child);
@@ -604,85 +623,91 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
             s = parseText(child);
         }
         else if (name == "g") {
-            s = parseGroup(child);
+            s = parseGroup(child);  
         }
 
         if (s) children.push_back(s);
     }
 
-    // Parse transform and return Group
-    MyTransform* tf = parseTransform(node);
-    Group* group = new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, fontSize);
-    if (tf) group->setTransform(tf);
-
-    return group;
+    return new Group(children, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, fontSize, tf);
 }
 
 MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
     xml_attribute<>* tfAttr = node->first_attribute("transform");
     if (!tfAttr) {
-        cout << "No transform attribute found.\n";
         return nullptr;
     }
 
-    string tfStr = tfAttr->value();
-    cout << "Transform string: " << tfStr << "\n";
-
+    std::string tfStr = tfAttr->value();
     MyTransform* tf = new MyTransform();
+
     size_t pos = 0;
-
     while (pos < tfStr.length()) {
+        
+        while (pos < tfStr.length() && !isalpha(tfStr[pos])) pos++;
+        if (pos >= tfStr.length()) break;
+
+        size_t nameStart = pos;
+        while (pos < tfStr.length() && isalpha(tfStr[pos])) pos++;
+        std::string name = tfStr.substr(nameStart, pos - nameStart);
+        if (name.empty()) continue;
+
         while (pos < tfStr.length() && isspace(tfStr[pos])) pos++;
+        if (pos >= tfStr.length() || tfStr[pos] != '(') continue;
+        pos++; 
 
-        if (tfStr.substr(pos, 9) == "translate") {
-            size_t start = tfStr.find('(', pos) + 1;
-            size_t end = tfStr.find(')', start);
-            string content = tfStr.substr(start, end - start);
-            cout << "Found translate: " << content << "\n";
-
-            float tx = 0, ty = 0;
-            int readCount = sscanf_s(content.c_str(), "%f,%f", &tx, &ty);
-            cout << "Parsed translate tx=" << tx << ", ty=" << ty << " (readCount=" << readCount << ")\n";
-
-            tf->setTranslate(tx, ty);
-            pos = end + 1;
+        
+        size_t paramStart = pos;
+        int parenCount = 1;
+        while (pos < tfStr.length() && parenCount > 0) {
+            if (tfStr[pos] == '(') parenCount++;
+            else if (tfStr[pos] == ')') parenCount--;
+            pos++;
         }
-        else if (tfStr.substr(pos, 5) == "scale") {
-            size_t start = tfStr.find('(', pos) + 1;
-            size_t end = tfStr.find(')', start);
-            string content = tfStr.substr(start, end - start);
-            cout << "Found scale: " << content << "\n";
+        size_t paramEnd = pos - 1;
+        std::string params = tfStr.substr(paramStart, paramEnd - paramStart);
 
-            float sx = 1, sy = 1;
-            if (content.find(',') != string::npos) {
-                int readCount = sscanf_s(content.c_str(), "%f,%f", &sx, &sy);
-                cout << "Parsed scale sx=" << sx << ", sy=" << sy << " (readCount=" << readCount << ")\n";
+        std::vector<float> numbers;
+        std::string num;
+        for (size_t i = 0; i < params.size(); ++i) {
+            char c = params[i];
+            if (isdigit(c) || c == '.' || c == '-' || c == '+') {
+                num += c;
+            }
+            else if (c == ',' || isspace(c)) {
+                if (!num.empty()) {
+                    numbers.push_back(std::stof(num));
+                    num.clear();
+                }
+            }
+        }
+        if (!num.empty()) {
+            numbers.push_back(std::stof(num));
+        }
+
+        if (name == "translate") {
+            float tx = numbers.size() > 0 ? numbers[0] : 0.0f;
+            float ty = numbers.size() > 1 ? numbers[1] : 0.0f;
+            tf->setTranslate(tx, ty);
+            cout << "Translate: " << tx << " " << ty << '\n';
+        }
+        else if (name == "scale") {
+            float sx = numbers.size() > 0 ? numbers[0] : 1.0f;
+            float sy = numbers.size() > 1 ? numbers[1] : sx;
+            tf->setScale(sx, sy);
+            cout << "Scale: " << sx << " " << sy << '\n';
+        }
+        else if (name == "rotate") {
+            float angle = numbers.size() > 0 ? numbers[0] : 0.0f;
+            if (numbers.size() == 3) {
+                tf->setTranslate(numbers[1], numbers[2]);
+                tf->setRotate(angle);
+                tf->setTranslate(-numbers[1], -numbers[2]);
             }
             else {
-                int readCount = sscanf_s(content.c_str(), "%f", &sx);
-                sy = sx;
-                cout << "Parsed uniform scale sx=sy=" << sx << " (readCount=" << readCount << ")\n";
+                tf->setRotate(angle);
             }
-
-            tf->setScale(sx, sy);
-            pos = end + 1;
-        }
-        else if (tfStr.substr(pos, 6) == "rotate") {
-            size_t start = tfStr.find('(', pos) + 1;
-            size_t end = tfStr.find(')', start);
-            string content = tfStr.substr(start, end - start);
-            cout << "Found rotate: " << content << "\n";
-
-            float angle = 0;
-            int readCount = sscanf_s(content.c_str(), "%f", &angle);
-            cout << "Parsed rotate angle=" << angle << " (readCount=" << readCount << ")\n";
-
-            tf->setRotate(angle);
-            pos = end + 1;
-        }
-        else {
-            cout << "Unknown transform or skipping character: " << tfStr[pos] << "\n";
-            pos++;
+            cout << "Rotate: " << angle << '\n';
         }
     }
 

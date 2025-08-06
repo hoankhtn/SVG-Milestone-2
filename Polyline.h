@@ -12,7 +12,7 @@ private:
 	float strokeWidth;
 	float strokeOpacity;
 public:
-	MyPolyline(const Color&, float, const vector<POINT>&, const Color&, float, float);
+	MyPolyline(const Color&, float, const vector<POINT>&, const Color&, float, float, MyTransform*);
 	void setFill(const Color&);
 	Color getFill() const;
 	void setFillOpacity(float);
