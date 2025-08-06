@@ -2,7 +2,9 @@
 #include "Commands.h"
 
 Path::Path(const vector<PathCommand*>& commands, Color fill, float fillOpacity, Color stroke, float strokeWidth, float strokeOpacity, MyTransform* pathTransform)
-: commands(commands), fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity) {}
+    : commands(commands), fill(fill), fillOpacity(fillOpacity), stroke(stroke), strokeWidth(strokeWidth), strokeOpacity(strokeOpacity) {
+    transform = pathTransform;
+}
 
 vector<PathCommand*> Path::getCommands() const {
 	return commands;
