@@ -1,8 +1,10 @@
 ﻿#include "TextDecorator.h"
 #include "Group.h"
 
-TextDecorator::TextDecorator(Shape* shape, wstring text, int x, int y, const Color& color, int FontSize)
-    : ShapeDecorator(shape), text(text), x(x), y(y), color(color), FontSize(FontSize) {}
+TextDecorator::TextDecorator(Shape* shape, wstring text, int x, int y, const Color& color, int FontSize, MyTransform* textTransform)
+    : ShapeDecorator(shape), text(text), x(x), y(y), color(color), FontSize(FontSize) {
+    transform = textTransform;
+}
 
 void TextDecorator::setFontSize(int fontSize) {
     this->FontSize = fontSize;

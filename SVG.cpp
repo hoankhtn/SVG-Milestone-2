@@ -62,7 +62,6 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
             if (name != "line" && name != "text") {
                 shape = new BorderDecorator(shape);        
                 shape = new BackgroundDecorator(shape);
-                /*shape = new BorderDecorator(shape);*/
             }
             else if (name != "text") {
                 shape = new BorderDecorator(shape);
@@ -86,7 +85,7 @@ int main() {
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
     LoadFileSVG loader;
-    loader.LoadSVG("svg-11.svg");
+    loader.LoadSVG("svg-03.svg");
 
     GdiplusShutdown(gdiplusToken);
     return 0;
@@ -118,7 +117,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR lpCmdLine, INT iCmdShow)
 
     /*string fileName = lpCmdLine;*/
     LoadFileSVG loader;
-    loader.LoadSVG("svg-11.svg");
+    loader.LoadSVG("svg-18.svg");
 
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;

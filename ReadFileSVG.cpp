@@ -32,7 +32,7 @@ Color ReadFileSVG::parseColor(const char* colorStr, float opacity)
         {"orange", Color(alpha, 255, 165, 0)},
         {"purple", Color(alpha, 128, 0, 128)},
         {"brown", Color(alpha, 165, 42, 42)},
-        {"sky-blue", Color(alpha, 135, 206, 235)},
+        {"skyblue", Color(alpha, 135, 206, 235)},
         {"deeppink", Color(alpha, 255, 20, 147)},
         {"lime", Color(alpha, 0, 255, 0)},
         {"navy", Color(alpha, 0, 0, 128)},

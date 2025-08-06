@@ -11,7 +11,7 @@ private:
 public:
 	void setFontSize(int fontSize);
 	int getFontSize() const;
-	TextDecorator(Shape*, wstring, int, int, const Color&, int);
+	TextDecorator(Shape*, wstring, int, int, const Color&, int, MyTransform*);
 	void draw(Graphics&) override; // Draws the original shape and then the text
 };
 
