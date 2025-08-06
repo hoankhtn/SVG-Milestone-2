@@ -138,17 +138,6 @@ Shape* ReadFileSVG::parseRectangle(xml_node<>* node) {
     Color fill = parseColor(fillStr, fillOpacity);
     Color stroke = parseColor(strokeStr, strokeOpacity);
     
-    cout << "Rectangle\n";
-    cout << "Toa do x: " << x << '\n';
-    cout << "Toa do y: " << y << '\n';
-    cout << "width: " << width << '\n';
-    cout << "height: " << height << '\n';
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
-
     return new MyRectangle(x, y, width, height, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
@@ -171,16 +160,6 @@ Shape* ReadFileSVG::parseCircle(xml_node<>* node) {
 
     Color fill = parseColor(fillStr, fillOpacity);
     Color stroke = parseColor(strokeStr, strokeOpacity);
-
-    cout << "Circle\n";
-    cout << "cx: " << cx << '\n';
-    cout << "cy: " << cy << '\n';
-    cout << "r: " << r << '\n';
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
 
     return new Circle(cx, cy, r, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
@@ -206,17 +185,6 @@ Shape* ReadFileSVG::parseEllipse(xml_node<>* node) {
     Color fill = parseColor(fillStr, fillOpacity);
     Color stroke = parseColor(strokeStr, strokeOpacity);
 
-    cout << "Ellipse\n";
-    cout << "cx: " << cx << '\n';
-    cout << "cy: " << cy << '\n';
-    cout << "rx: " << rx << '\n';
-    cout << "ry: " << ry << '\n';
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
-
     return new MyEllipse(cx, cy, rx, ry, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
@@ -236,15 +204,7 @@ Shape* ReadFileSVG::parseLine(xml_node<>* node) {
 
     const char* strokeStr = node->first_attribute("stroke") ? node->first_attribute("stroke")->value() : "rgb(0,0,0)";
     Color stroke = parseColor(strokeStr, strokeOpacity);
-    cout << "Line\n";
-    cout << "Toa do x1: " << x1 << '\n';
-    cout << "Toa do x2: " << x2 << '\n';
-    cout << "Toa do y1: " << y1 << '\n';
-    cout << "Toa do y2: " << y2 << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
-    
+  
     return new Line(x1, y1, x2, y2, stroke, strokeWidth, strokeOpacity, tf);
 }
 
@@ -271,16 +231,7 @@ Shape* ReadFileSVG::parsePolyline(xml_node<>* node) {
     for (auto& pt : pts) {
         ptsPOINT.push_back({ static_cast<LONG>(pt.getPointX()), static_cast<LONG>(pt.getPointY()) });
     }
-    cout << "Polyline\n";
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
-    for (auto& pt : ptsPOINT) {
-        cout << "(" << pt.x << ", " << pt.y << ")" << '\n';
-    }
-
+   
     return new MyPolyline(fill, fillOpacity, ptsPOINT, stroke, strokeWidth, strokeOpacity, tf);
 }
 
@@ -302,15 +253,6 @@ Shape* ReadFileSVG::parsePolygon(xml_node<>* node) {
     Color stroke = parseColor(strokeStr, strokeOpacity);
 
     vector<Point2D> pts = parsePoints(pointsStr);
-    cout << "Polygon\n";
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "strokeOpacity: " << strokeOpacity << '\n';
-    cout << "strokeWidth: " << strokeWidth << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-    cout << "strokeStr: " << strokeStr << '\n';
-    for (auto& pt : pts) {
-        cout << "(" << pt.getPointX() << ", " << pt.getPointY() << ")" << '\n';
-    }
 
     return new MyPolygon(fill, fillOpacity, pts, stroke, strokeWidth, strokeOpacity, tf);
 }
@@ -335,13 +277,7 @@ Shape* ReadFileSVG::parseText(xml_node<>* node) {
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, textContent, -1, NULL, 0);
     wstring wtext(size_needed - 1, 0); 
     MultiByteToWideChar(CP_UTF8, 0, textContent, -1, &wtext[0], size_needed);
-    cout << "Text\n";
-    cout << "Toa do x: " << x << '\n';
-    cout << "Toa do y: " << y << '\n';
-    cout << "fontSize: " << fontSize << '\n';
-    cout << "fillOpacity: " << fillOpacity << '\n';
-    cout << "fillStr: " << fillStr << '\n';
-
+  
     return new TextDecorator(nullptr, wtext, x, y, fill, fontSize, tf);
 }
 
@@ -540,16 +476,7 @@ Shape* ReadFileSVG::parsePath(xml_node<>* node) {
 
     Color fill = parseColor(fillStr, fillOpacity);
     Color stroke = parseColor(strokeStr, strokeOpacity);
-    cout << "Path\n";
-    for (int i = 0; i < PathCommands.size(); i++) {
-        cout << "Command " << i + 1 << ": ";
-        PathCommands[i]->print(cout);
-    }
-    cout << "Fill opacity: " << fillOpacity << '\n';
-    cout << "Stroke width: " << strokeWidth << '\n';
-    cout << "FillStr: " << fillStr << '\n';
-    cout << "StrokeStr: " << strokeStr << '\n';
-
+  
 	return new Path(PathCommands, fill, fillOpacity, stroke, strokeWidth, strokeOpacity, tf);
 }
 
@@ -563,7 +490,6 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     float strokeOpacity = 1.0f;
     int fontSize = 1;
 
-    cout << "Group\n";
     MyTransform* tf = nullptr;
     if (xml_attribute<>* attr = node->first_attribute("transform")) {
         tf = parseTransform(node);
@@ -571,7 +497,7 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
 
     if (xml_attribute<>* attr = node->first_attribute("fill")) {
         fill = parseColor(attr->value(), 255);
-        cout << "Fill: " << attr->value() << '\n';
+     
     }
     if (xml_attribute<>* attr = node->first_attribute("fill-opacity")) {
         fillOpacity = parseFloat(attr->value(), 1.0f);
@@ -580,7 +506,7 @@ Shape* ReadFileSVG::parseGroup(xml_node<>* node) {
     }
     if (xml_attribute<>* attr = node->first_attribute("stroke")) {
         stroke = parseColor(attr->value(), 255);
-        cout << "Stroke: " << attr->value() << '\n';
+        
     }
     if (xml_attribute<>* attr = node->first_attribute("stroke-width")) {
         strokeWidth = parseFloat(attr->value(), 1.0f);
@@ -649,7 +575,7 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
 
         size_t nameStart = pos;
         while (pos < tfStr.length() && isalpha(tfStr[pos])) pos++;
-        std::string name = tfStr.substr(nameStart, pos - nameStart);
+        string name = tfStr.substr(nameStart, pos - nameStart);
         if (name.empty()) continue;
 
         while (pos < tfStr.length() && isspace(tfStr[pos])) pos++;
@@ -665,10 +591,10 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
             pos++;
         }
         size_t paramEnd = pos - 1;
-        std::string params = tfStr.substr(paramStart, paramEnd - paramStart);
+        string params = tfStr.substr(paramStart, paramEnd - paramStart);
 
-        std::vector<float> numbers;
-        std::string num;
+        vector<float> numbers;
+        string num;
         for (size_t i = 0; i < params.size(); ++i) {
             char c = params[i];
             if (isdigit(c) || c == '.' || c == '-' || c == '+') {
@@ -689,13 +615,13 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
             float tx = numbers.size() > 0 ? numbers[0] : 0.0f;
             float ty = numbers.size() > 1 ? numbers[1] : 0.0f;
             tf->setTranslate(tx, ty);
-            cout << "Translate: " << tx << " " << ty << '\n';
+            
         }
         else if (name == "scale") {
             float sx = numbers.size() > 0 ? numbers[0] : 1.0f;
             float sy = numbers.size() > 1 ? numbers[1] : sx;
             tf->setScale(sx, sy);
-            cout << "Scale: " << sx << " " << sy << '\n';
+            
         }
         else if (name == "rotate") {
             float angle = numbers.size() > 0 ? numbers[0] : 0.0f;
@@ -707,7 +633,7 @@ MyTransform* ReadFileSVG::parseTransform(xml_node<>* node) {
             else {
                 tf->setRotate(angle);
             }
-            cout << "Rotate: " << angle << '\n';
+         
         }
     }
 
