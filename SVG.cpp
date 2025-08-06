@@ -98,9 +98,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR lpCmdLine, INT iCmdShow)
     // Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
-    /*string fileName = lpCmdLine;*/
+    string fileName = lpCmdLine;
     LoadFileSVG loader;
-    loader.LoadSVG("svg-18.svg");
+    loader.LoadSVG(fileName);
 
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;

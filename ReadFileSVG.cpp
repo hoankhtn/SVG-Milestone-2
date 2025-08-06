@@ -18,6 +18,7 @@ Color ReadFileSVG::parseColor(const char* colorStr, float opacity)
     transform(name.begin(), name.end(), name.begin(), ::tolower);
 
     static const unordered_map<string, Color> namedColors = {
+        {"none", Color(alpha, 255, 255, 255)},
         {"black", Color(alpha, 0, 0, 0)},
         {"white", Color(alpha, 255, 255, 255)},
         {"red",   Color(alpha, 255, 0, 0)},
