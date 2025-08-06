@@ -56,7 +56,6 @@ void BorderDecorator::draw(Graphics& graphics)
 
     else if (MyRectangle* rect = dynamic_cast<MyRectangle*>(core))
     {
-        cout << "Find rectangle" << '\n';
         int x = rect->getX();
         int y = rect->getY();
         int w = rect->getWidth();
@@ -81,7 +80,6 @@ void BorderDecorator::draw(Graphics& graphics)
 
     else if (MyPolygon* polygon = dynamic_cast<MyPolygon*>(core))
     {
-		cout << "Find polygon" << '\n';
         const auto& points = polygon->getPoints();
         Color stroke = polygon->getStroke();
         float strokeWidth = polygon->getStrokeWidth();
@@ -212,7 +210,6 @@ void BorderDecorator::draw(Graphics& graphics)
 
     else if (Group* group = dynamic_cast<Group*>(core))
     {
-        cout << "Enter Group" << '\n';
         Color groupStroke = group->getStroke();
         float groupStrokeWidth = group->getStrokeWidth();
         float groupStrokeOpacity = group->getStrokeOpacity();
@@ -244,7 +241,6 @@ void BorderDecorator::draw(Graphics& graphics)
                     ellipse->setStrokeOpacity(groupStrokeOpacity);
             }
             else if (auto rectangle = dynamic_cast<MyRectangle*>(subShape)) {
-                cout << "Enter rectangle" << '\n';
                 if (rectangle->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
                     rectangle->setStroke(groupStroke);
                 if (rectangle->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
@@ -269,7 +265,6 @@ void BorderDecorator::draw(Graphics& graphics)
                     polyline->setStrokeOpacity(groupStrokeOpacity);
             }
             else if (auto polygon = dynamic_cast<MyPolygon*>(subShape)) {
-				cout << "Enter polygon" << '\n';
                 if (polygon->getStroke().GetA() == 0 && groupStroke.GetA() > 0)
                     polygon->setStroke(groupStroke);
                 if (polygon->getStrokeWidth() <= 0.0f && groupStrokeWidth > 0.0f)
