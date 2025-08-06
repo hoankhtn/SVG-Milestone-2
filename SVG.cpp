@@ -74,23 +74,6 @@ void LoadFileSVG::LoadSVG(const string& fileName) {
     }
 }
 
-int main() {
-    HWND                hWnd;
-    MSG                 msg;
-    WNDCLASS            wndClass;
-    GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR           gdiplusToken;
-
-    // Initialize GDI+.
-    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-    LoadFileSVG loader;
-    loader.LoadSVG("svg-03.svg");
-
-    GdiplusShutdown(gdiplusToken);
-    return 0;
-}
-
 VOID OnPaint(HDC hdc)
 {
    Graphics graphics(hdc);
